@@ -50,7 +50,8 @@ export default function GuidedTour({ userId }) {
         const onboardingCompleted = localStorage.getItem(`onboardingCompleted_${userId}`) === 'true';
         const tourCompleted = localStorage.getItem(`tourCompleted_${userId}`) === 'true';
 
-        if (pathname === '/' && onboardingCompleted && !tourCompleted) {
+        if (pathname === '/' && onboardingCompleted && !tourCompleted && !isActive) {
+            // eslint-disable-next-line
             setIsActive(true);
             setCurrentStep(0);
         }
@@ -63,7 +64,7 @@ export default function GuidedTour({ userId }) {
 
         window.addEventListener('startGuidedTour', startTour);
         return () => window.removeEventListener('startGuidedTour', startTour);
-    }, [userId, pathname]);
+    }, [userId, pathname, isActive]);
 
     useEffect(() => {
         if (!isActive || currentStep < 0 || currentStep >= steps.length) return;

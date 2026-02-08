@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { getRequestsForUser } from '../../lib/db';
 import RequestCard from '../../components/RequestCard';
 import styles from './page.module.css';

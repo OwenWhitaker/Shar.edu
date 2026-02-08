@@ -7,22 +7,7 @@ export default function ImageUpload({ name, multiple = false }) {
     const [previews, setPreviews] = useState([]);
     const [base64Values, setBase64Values] = useState([]);
 
-    const handleFileChange = useCallback((e) => {
-        const files = Array.from(e.target.files);
-        processFiles(files);
-    }, []);
-
-    const handleDrop = useCallback((e) => {
-        e.preventDefault();
-        const files = Array.from(e.dataTransfer.files);
-        processFiles(files);
-    }, []);
-
-    const handleDragOver = (e) => {
-        e.preventDefault();
-    };
-
-    const processFiles = (files) => {
+    const processFiles = useCallback((files) => {
         const newPreviews = [];
         const newBase64 = [];
 
@@ -44,7 +29,18 @@ export default function ImageUpload({ name, multiple = false }) {
             };
             reader.readAsDataURL(file);
         });
-    };
+    }, [multiple]);
+
+    const handleFileChange = useCallback((e) => {
+        const files = Array.from(e.target.files);
+        processFiles(files);
+    }, [processFiles]);
+
+    const handleDrop = useCallback((e) => {
+        e.preventDefault();
+        const files = Array.from(e.dataTransfer.files);
+        processFiles(files);
+    }, [processFiles]);
 
     const removeImage = (index) => {
         setPreviews(prev => prev.filter((_, i) => i !== index));
