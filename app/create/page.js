@@ -28,7 +28,7 @@ export default function CreateListing() {
             title: formData.get('title'),
             itemDescription: formData.get('description'),
             tag: formData.get('tags'),
-            photo: formData.get('image'), // ImageUpload uses name="image"
+            photos: formData.getAll('image'), // Get all images
         };
 
         try {
@@ -43,7 +43,9 @@ export default function CreateListing() {
             if (res.ok) {
                 router.push('/');
             } else {
-                console.error("Failed to create listing");
+                const errorData = await res.text();
+                console.error("Failed to create listing:", res.status, errorData);
+                alert(`Failed to create listing: ${res.status} ${errorData}`);
             }
         } catch (error) {
             console.error("Error creating listing:", error);
@@ -84,7 +86,7 @@ export default function CreateListing() {
                     <div className={styles.formGroup}>
                         <label className={styles.label}>Photos</label>
                         <div className={styles.uploadBox}>
-                            <ImageUpload name="image" />
+                            <ImageUpload name="image" multiple={true} />
                         </div>
                         <small className={styles.hint}>First image will be the cover.</small>
                     </div>

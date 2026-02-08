@@ -53,12 +53,10 @@ export default function ImageUpload({ name, multiple = false }) {
 
     return (
         <div className={styles.container}>
-            {/* Hidden inputs to send data in form submission if needed, 
-          though for base64 in server actions it might be too large for standard form submission limits.
-          For MVP hackathon, we assume it works or use client-side fetch. 
-          Here we'll use a hidden input with the first image for the MVP 'image' field requirement.
-      */}
-            <input type="hidden" name={name} value={base64Values[0] || ''} />
+            {/* Hidden inputs to send data in form submission */}
+            {base64Values.map((value, index) => (
+                <input key={index} type="hidden" name={name} value={value} />
+            ))}
 
             <div
                 className={styles.dropZone}
