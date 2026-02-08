@@ -1,60 +1,102 @@
 .container {
+    min-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 100px);
-    background: linear-gradient(135deg, var(--background) 0%, #eef2f6 100%);
+    padding: 1rem;
 }
 
 .card {
     background: white;
-    padding: 3rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
     width: 100%;
     max-width: 450px;
+    padding: 3rem 2.5rem;
+    border-radius: 40px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.header {
     text-align: center;
+    margin-bottom: 2.5rem;
 }
 
 .title {
-    color: var(--primary);
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-main);
     margin-bottom: 0.5rem;
-    font-size: 2rem;
+    letter-spacing: -0.02em;
 }
 
 .subtitle {
     color: var(--text-secondary);
-    margin-bottom: 2rem;
+    font-size: 1.1rem;
 }
 
 .form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    text-align: left;
 }
 
-.inputGroup {
+.formGroup {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
+.label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-left: 1rem;
+    /* Align with input curve */
+}
+
 .input {
-    padding: 0.8rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border-radius: 100px;
+    border: 2px solid var(--border);
     font-size: 1rem;
+    outline: none;
+    transition: all 0.2s;
+    background: var(--background);
 }
 
 .input:focus {
-    outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(0, 51, 102, 0.1);
+    background: white;
 }
 
-.note {
-    margin-top: 1.5rem;
-    font-size: 0.8rem;
+.submitBtn {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    border-radius: 100px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+
+.submitBtn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 42, 16, 0.3);
+}
+
+.submitBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.footerText {
+    text-align: center;
+    font-size: 0.85rem;
     color: var(--text-secondary);
+    margin-top: 1rem;
 }

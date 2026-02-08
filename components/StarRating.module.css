@@ -1,0 +1,27 @@
+.starContainer {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    vertical-align: middle;
+}
+
+.starWrapper {
+    position: relative;
+    display: inline-block;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.starEmpty {
+    color: #e0e0e0;
+}
+
+.starFill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #FFC107;
+    /* Golden Yellow */
+    overflow: hidden;
+    white-space: nowrap;
+}

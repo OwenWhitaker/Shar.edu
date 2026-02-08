@@ -40,16 +40,17 @@ function LoginForm() {
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-                <h1 className={styles.title}>Welcome to BorrowIt</h1>
-                <p className={styles.subtitle}>The university peer-to-peer lending marketplace.</p>
+                <div className={styles.header}>
+                    <h1 className={styles.title}>Welcome Back</h1>
+                    <p className={styles.subtitle}>Log in to start sharing and borrowing.</p>
+                </div>
 
                 <form onSubmit={handleSubmit} className={styles.form}>
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="email">University Email</label>
+                    <div className={styles.formGroup}>
+                        <label className={styles.label}>Email Address</label>
                         <input
                             type="email"
-                            id="email"
-                            placeholder="you@university.edu"
+                            placeholder="student@university.edu"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -80,6 +81,10 @@ function LoginForm() {
                     >
                         {loading ? 'Signing in...' : 'Continue with Email'}
                     </button>
+
+                    <p className={styles.footerText}>
+                        Only verified university students can join.
+                    </p>
                 </form>
                 <p className={styles.note}>
                     New here? <a href="/register" style={{ color: '#0070f3' }}>Create an account</a>

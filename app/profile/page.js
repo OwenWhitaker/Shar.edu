@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import styles from './page.module.css';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import StarRating from '../../components/StarRating';
 
 export default function PersonalProfile() {
     const { user, isAuthenticated } = useAuth();
@@ -45,7 +46,10 @@ export default function PersonalProfile() {
                         <h2>{user.name}</h2>
                         <p className={styles.email}>{user.email}</p>
                         <div className={styles.rating}>
-                            <span>⭐ {user.rating}</span>
+                            <span>
+                                {user.rating > 0 ? `${user.rating}/5` : 'No ratings yet'}
+                            </span>
+                            {user.rating > 0 && <div style={{ marginTop: '0.25rem' }}><StarRating rating={user.rating} /></div>}
                         </div>
                     </div>
                 </div>
