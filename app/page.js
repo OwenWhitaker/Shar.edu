@@ -4,10 +4,9 @@ import styles from './page.module.css';
 import HeroClouds from '../components/HeroClouds';
 import HeroSearch from '../components/HeroSearch';
 
-import FeaturedListings from '../components/FeaturedListings';
-
 export default function Home() {
     const listings = getListings();
+    const featuredListings = listings.slice(0, 6); // Show top 6
 
     return (
         <div className={styles.container}>
@@ -36,7 +35,30 @@ export default function Home() {
                         </Link>
                     </div>
 
-                    <FeaturedListings listings={listings} />
+                    <div className={styles.grid}>
+                        {featuredListings.map(listing => (
+                            <Link href={`/listings/${listing.id}`} key={listing.id} className={styles.cardLink}>
+                                <div className="card">
+                                    <div className={styles.cardImageContainer}>
+                                        <img
+                                            src={listing.image}
+                                            alt={listing.title}
+                                            className={styles.cardImage}
+                                        />
+                                        <div className={styles.cardOverlay}>
+                                            <span className={styles.lenderBadge}>
+                                                {listing.lender?.name?.[0] || 'U'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className={styles.cardContent}>
+                                        <h3 className={styles.cardTitle}>{listing.title}</h3>
+                                        <p className={styles.cardMeta}>Posted by {listing.lender?.name}</p>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
                 </div>
             </section>
         </div>

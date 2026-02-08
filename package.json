@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:restart": "nodemon",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -23,7 +22,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
-    "nodemon": "^3.1.11",
     "typescript": "^5"
   }
 }
