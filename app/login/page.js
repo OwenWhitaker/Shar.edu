@@ -27,14 +27,35 @@ function LoginForm() {
         return () => unsubscribe();
     }, [router, returnUrl]);
 
+    const validateEmail = (email) => {
+        // Regex for XXXX@XXX.edu format where X can be any number of characters/digits
+        // We enforce standard email characters before @, then standard domain chars, ending in .edu (case insensitive)
+        const regex = /^[^@]+@[^@]+\.edu$/i;
+        return regex.test(email);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+
+        const trimmedEmail = email.trim();
+        console.log("Validating email:", trimmedEmail); // Debugging log
+
+        if (!validateEmail(trimmedEmail)) {
+            console.log("Validation failed");
+            setError('Please enter a valid .edu email address (e.g., student@university.edu).');
+            return;
+        }
+        console.log("Validation passed");
+
         try {
+            setLoading(true);
             // This line sends the data to your Firebase Dashboard
             await signInWithEmailAndPassword(auth, email, password);
             router.push('/');
         } catch (err) {
-            alert("Firebase error: " + err.message);
+            setError("Firebase error: " + err.message);
+            setLoading(false);
         }
     };
 
