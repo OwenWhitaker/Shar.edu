@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import styles from './login.module.css';
 
 function LoginForm() {
@@ -88,7 +89,7 @@ function LoginForm() {
                 </form>
                 <div className={styles.footerContainer}>
                     <p className={styles.footerNote}>
-                        New here? <a href="/register" style={{ color: '#0070f3' }}>Create an account</a>
+                        New here? <Link href="/register" style={{ color: '#0070f3' }}>Create an account</Link>
                     </p>
                     <p className={styles.footerNote}>*Access restricted to Verified Students only.</p>
                 </div>
