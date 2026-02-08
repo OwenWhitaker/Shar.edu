@@ -18,14 +18,14 @@ export async function POST(request) {
                 firebaseUid: uid,
                 email: email,
                 username: displayName || email.split('@')[0], // Fallback username
-                image: photoURL,
                 lastLogin: new Date()
             },
             $setOnInsert: {
                 createdAt: new Date(),
                 numListings: 0,
                 bio: "New to Shar.edu",
-                major: "Undecided"
+                major: "Undecided",
+                image: photoURL
             }
         };
 

@@ -1,13 +1,78 @@
-import { getUser, getListings } from '../../../lib/db';
+import clientPromise from '@/lib/mongodb';
 import styles from './page.module.css';
 import Link from 'next/link';
 import StarRating from '../../../components/StarRating';
 
+async function getUser(id) {
+    try {
+        const client = await clientPromise;
+        const db = client.db("borrowit");
+
+        const user = await db.collection("users").findOne({ firebaseUid: id });
+
+        if (!user) return null;
+
+        // Map MongoDB fields to expected format
+        return {
+            id: user.firebaseUid,
+            name: user.username || user.name,
+            email: user.email,
+            image: user.image,
+            major: user.major || 'Undecided',
+            bio: user.bio || 'No bio yet',
+            rating: user.rating || 0,
+            numListings: user.numListings || 0
+        };
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return null;
+    }
+}
+
+async function getUserListings(userId) {
+    try {
+        const client = await clientPromise;
+        const db = client.db("borrowit");
+
+        const listings = await db.collection("listings").aggregate([
+            { $match: { ownerUid: userId } },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "ownerUid",
+                    foreignField: "firebaseUid",
+                    as: "lender"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$lender",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    id: { $toString: "$_id" },
+                    title: 1,
+                    image: "$photo",
+                    itemDescription: 1,
+                    "lender.name": "$lender.username"
+                }
+            }
+        ]).toArray();
+
+        return listings;
+    } catch (error) {
+        console.error("Error fetching user listings:", error);
+        return [];
+    }
+}
+
 export default async function UserProfile({ params }) {
     const { id } = await params;
-    const user = getUser(id);
-    const allListings = getListings();
-    const userListings = allListings.filter(l => l.lenderId === id);
+    const user = await getUser(id);
+    const userListings = await getUserListings(id);
 
     if (!user) {
         return <div className="container" style={{ padding: '4rem' }}>User not found</div>;

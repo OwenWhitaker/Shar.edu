@@ -61,7 +61,8 @@ export async function GET() {
                     createdAt: 1,
                     ownerUid: 1,
                     "lender.username": 1, // Map username to name for display
-                    "lender.firebaseUid": 1
+                    "lender.firebaseUid": 1,
+                    "lender.image": 1
                 }
             }
         ]).toArray();
@@ -72,7 +73,12 @@ export async function GET() {
         const finallistings = listingsWithLender.map(l => ({
             ...l,
             image: l.photo, // frontend uses .image
-            lender: l.lender ? { ...l.lender, name: l.lender.username } : null
+            lender: l.lender ? {
+                ...l.lender,
+                name: l.lender.username,
+                id: l.lender.firebaseUid,
+                image: l.lender.image
+            } : null
         }));
 
         return NextResponse.json(finallistings);

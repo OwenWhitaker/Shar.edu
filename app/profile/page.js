@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import StarRating from '../../components/StarRating';
 
 export default function PersonalProfile() {
-    const { user, isAuthenticated, logout } = useAuth();
+    const { user, isAuthenticated, loading, logout, refreshUser } = useAuth();
     const router = useRouter();
 
     // Local state for editing form
@@ -15,18 +15,20 @@ export default function PersonalProfile() {
     const [major, setMajor] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (!isAuthenticated && !loading) {
             router.push('/login');
             return;
         }
 
         if (user) {
             // Sync local state with user profile on load
-            if (user.bio && bio !== user.bio) setBio(user.bio);
-            if (user.major && major !== user.major) setMajor(user.major);
-            if (user.image && imagePreview !== user.image) setImagePreview(user.image);
+            if (user.bio && bio === '') setBio(user.bio);
+            if (user.major && major === '') setMajor(user.major);
+            if (user.image && imagePreview === null) setImagePreview(user.image);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated, user, router]);
@@ -46,6 +48,8 @@ export default function PersonalProfile() {
 
     const handleSave = async (e) => {
         e.preventDefault();
+        setIsSaving(true);
+        setSaveSuccess(false);
         try {
             const response = await fetch(`/api/user/${user.uid}`, {
                 method: 'PATCH',
@@ -61,13 +65,20 @@ export default function PersonalProfile() {
 
             if (!response.ok) throw new Error('Failed to update profile');
 
-            // Refresh to show changes (since AuthContext doesn't auto-update from this API call yet)
-            window.location.reload();
+            // Instead of reloading, refresh the user data in AuthContext
+            await refreshUser();
+
+            setSaveSuccess(true);
+            setIsEditing(false);
+
+            // Clear success message after 3 seconds
+            setTimeout(() => setSaveSuccess(false), 3000);
         } catch (error) {
             console.error("Error saving profile:", error);
             alert("Failed to save profile. Please try again.");
+        } finally {
+            setIsSaving(false);
         }
-        setIsEditing(false);
     };
 
     return (
@@ -137,14 +148,17 @@ export default function PersonalProfile() {
                     <div className={styles.actions}>
                         {isEditing ? (
                             <>
-                                <button type="button" className="btn btn-outline" onClick={() => setIsEditing(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary">Save Changes</button>
+                                <button type="button" className="btn btn-outline" onClick={() => setIsEditing(false)} disabled={isSaving}>Cancel</button>
+                                <button type="submit" className="btn btn-primary" disabled={isSaving}>
+                                    {isSaving ? 'Saving...' : 'Save Changes'}
+                                </button>
                             </>
                         ) : (
                             <button type="button" className="btn btn-primary" onClick={() => setIsEditing(true)}>Edit Profile</button>
                         )}
                     </div>
                 </form>
+                {saveSuccess && <p className={styles.successMessage} style={{ color: 'green', textAlign: 'center', marginTop: '1rem' }}>Profile updated successfully!</p>}
             </div>
 
             <div className={styles.links}>

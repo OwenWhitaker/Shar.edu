@@ -52,7 +52,11 @@ export default function HomeClient({ featuredListings }) {
                                         />
                                         <div className={styles.cardOverlay}>
                                             <span className={styles.lenderBadge}>
-                                                {listing.lender?.name?.[0] || 'U'}
+                                                {listing.lender?.image ? (
+                                                    <img src={listing.lender.image} alt={listing.lender.name} className={styles.lenderImg} />
+                                                ) : (
+                                                    listing.lender?.name?.[0] || 'U'
+                                                )}
                                             </span>
                                         </div>
                                     </div>

@@ -76,7 +76,11 @@ export default function Home() {
                                             <p className={styles.cardMeta}>Posted by {listing.lender?.name}</p>
                                         </div>
                                         <span className={styles.lenderBadge}>
-                                            {listing.lender?.name?.[0] || 'U'}
+                                            {listing.lender?.image ? (
+                                                <img src={listing.lender.image} alt={listing.lender.name} className={styles.lenderImg} />
+                                            ) : (
+                                                listing.lender?.name?.[0] || 'U'
+                                            )}
                                         </span>
                                     </div>
                                 </div>
