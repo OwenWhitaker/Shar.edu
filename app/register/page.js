@@ -13,13 +13,30 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
+    const validateEmail = (email) => {
+        // Regex for XXXX@XXX.edu format where X can be any number of characters/digits
+        // We enforce standard email characters before @, then standard domain chars, ending in .edu (case insensitive)
+        const regex = /^[^@]+@[^@]+\.edu$/i;
+        return regex.test(email);
+    };
+
     const handleSignUp = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
+        const trimmedEmail = email.trim();
+        console.log("Validating signup email:", trimmedEmail);
+
+        if (!validateEmail(trimmedEmail)) {
+            setLoading(false);
+            console.log("Signup validation failed");
+            setError('Please use a valid .edu email address to register.');
+            return;
+        }
+
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
             const user = userCredential.user;
 
             // Create user in MongoDB
@@ -30,7 +47,7 @@ export default function RegisterPage() {
                 },
                 body: JSON.stringify({
                     email: user.email,
-                    username: email.split('@')[0], // Default username
+                    username: trimmedEmail.split('@')[0], // Default username
                 }),
             });
 
@@ -38,7 +55,6 @@ export default function RegisterPage() {
         } catch (err) {
             setError(err.message);
             console.error("Signup Error:", err.code);
-        } finally {
             setLoading(false);
         }
     };
@@ -46,7 +62,7 @@ export default function RegisterPage() {
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-                <h1 className={styles.title}>Join BorrowIt</h1>
+                <h1 className={styles.title}>Join Borrowit!</h1>
                 <p className={styles.subtitle}>Create your university student account.</p>
 
                 <form onSubmit={handleSignUp} className={styles.form}>
