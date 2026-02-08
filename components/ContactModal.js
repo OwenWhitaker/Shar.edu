@@ -9,8 +9,6 @@ export default function ContactModal({ isOpen, onClose, lenderEmail, listingTitl
     const { user, isAuthenticated } = useAuth();
     const router = useRouter();
 
-    if (!isOpen) return null;
-
     const subject = listingTitle
         ? `BorrowIt: Request to borrow ${listingTitle}`
         : `BorrowIt: Borrow request`;
@@ -18,6 +16,8 @@ export default function ContactModal({ isOpen, onClose, lenderEmail, listingTitl
     const defaultBody = `Hi,\n\nI'm interested in borrowing your item${listingTitle ? ` (${listingTitle})` : ''}.\n\nAre you available to meet up on campus?\n\nThanks,\n${user?.name || 'Student'}\n${user?.email}`;
 
     const [emailBody, setEmailBody] = useState(defaultBody);
+
+    if (!isOpen) return null;
 
     const handleOpenEmail = () => {
         if (!isAuthenticated) {

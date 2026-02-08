@@ -59,7 +59,7 @@ function Scene({ scrollY }) {
     // Calculate offsets based on scroll
     // Move outwards (x) and slightly down/back
     const moveFactor = scrollY * 0.02;
-    const rotateFactor = scrollY * 0.002;
+    const rotateFactor = scrollY * 0.003; // Reduced rotation speed per request
 
     return (
         <group ref={groupRef}>
@@ -70,7 +70,7 @@ function Scene({ scrollY }) {
             <GLBModel
                 url="/camera.glb"
                 position={[-12 - moveFactor, 1, -2]}
-                rotation={[0.4 + rotateFactor, 0.6 + rotateFactor, 0.2]}
+                rotation={[0.4 + rotateFactor, 0.6 + rotateFactor, 0.2 + rotateFactor]}
                 scale={0.065}
             />
 
@@ -81,7 +81,7 @@ function Scene({ scrollY }) {
             <GLBModel
                 url="/drill.glb"
                 position={[12 + moveFactor, 0, -2]}
-                rotation={[0.5 + rotateFactor, -0.6 - rotateFactor, -0.3]}
+                rotation={[0.5 + rotateFactor, -0.6 - rotateFactor, -0.3 + rotateFactor]}
                 scale={0.04}
             />
 

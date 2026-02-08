@@ -100,10 +100,17 @@
 
 .sectionHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 2rem;
-  padding: 0 0.5rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding: 1rem 0.5rem;
+  position: sticky;
+  top: 2rem;
+  z-index: 0;
+  text-align: center;
+  width: 100%;
 }
 
 .sectionTitle {
@@ -135,6 +142,11 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
+  position: relative;
+  z-index: 10;
+  background-color: var(--background);
+  padding-top: 1rem;
+  /* Slight padding to avoid immediate cutoff */
 }
 
 .cardLink {
