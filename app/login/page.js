@@ -35,7 +35,13 @@ function LoginForm() {
             router.push('/');
         } catch (err) {
             console.error("Login Error:", err);
-            setError("Incorrect email or password.");
+            if (err.code === 'auth/user-not-found') {
+                setError("Email does not match an account.");
+            } else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                setError("Incorrect password.");
+            } else {
+                setError("Login failed. Please check your credentials.");
+            }
         }
     };
 

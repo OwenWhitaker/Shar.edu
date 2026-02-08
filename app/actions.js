@@ -1,6 +1,6 @@
 "use server";
 
-import { createListing, createRequest, clearUserRequests } from '../lib/db';
+import { createListing } from '../lib/db';
 import { redirect } from 'next/navigation';
 
 export async function createListingAction(formData) {
@@ -24,23 +24,40 @@ export async function createListingAction(formData) {
     redirect(`/listings/${newListing.id}`);
 }
 
-export async function createRequestAction(listingId, lenderId, borrowerId) {
+
+export async function createRequestAction(listingId, lenderId, borrowerId, message) {
     if (!borrowerId) throw new Error("Must be logged in to borrow");
 
-    // Simulate delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/requests`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                listingId,
+                lenderId,
+                borrowerId,
+                message: message || '' // Include optional message
+            })
+        });
 
-    createRequest({
-        listingId,
-        lenderId,
-        borrowerId,
-    });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to create request');
+        }
 
-    // Revalidate paths if needed, or just return success
-    return { success: true };
+        const data = await response.json();
+        return { success: true, id: data.id };
+    } catch (error) {
+        console.error('Error creating request:', error);
+        return { success: false, error: error.message };
+    }
 }
 
+
 export async function clearRequestsAction(userId) {
-    clearUserRequests(userId);
+    // This function is no longer needed with MongoDB as we don't clear all requests
+    // But keeping it for backwards compatibility
     return { success: true };
 }

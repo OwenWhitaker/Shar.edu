@@ -7,26 +7,34 @@ import { useEffect, useState } from 'react';
 import StarRating from '../../components/StarRating';
 
 export default function PersonalProfile() {
-    const { user, isAuthenticated, logout } = useAuth();
+    const { user, isAuthenticated, loading, logout, refreshUser } = useAuth();
     const router = useRouter();
 
     // Local state for editing form
     const [bio, setBio] = useState('');
     const [major, setMajor] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (!isAuthenticated && !loading) {
             router.push('/login');
             return;
         }
 
         if (user) {
             // Sync local state with user profile on load
-            if (user.bio && bio !== user.bio) setBio(user.bio);
-            if (user.major && major !== user.major) setMajor(user.major);
-            if (user.image && imagePreview !== user.image) setImagePreview(user.image);
+            if (user.bio && bio === '') setBio(user.bio);
+            if (user.major && major === '') setMajor(user.major);
+            if (user.image && imagePreview === null) setImagePreview(user.image);
+
+            // Sync first and last name if not already set
+            if (user.firstName !== undefined && firstName === '') setFirstName(user.firstName);
+            if (user.lastName !== undefined && lastName === '') setLastName(user.lastName);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated, user, router]);
@@ -46,6 +54,8 @@ export default function PersonalProfile() {
 
     const handleSave = async (e) => {
         e.preventDefault();
+        setIsSaving(true);
+        setSaveSuccess(false);
         try {
             const response = await fetch(`/api/user/${user.uid}`, {
                 method: 'PATCH',
@@ -55,19 +65,28 @@ export default function PersonalProfile() {
                 body: JSON.stringify({
                     bio,
                     major,
+                    firstName: firstName.trim() || "First",
+                    lastName: lastName.trim() || "Last",
                     image: imagePreview
                 }),
             });
 
             if (!response.ok) throw new Error('Failed to update profile');
 
-            // Refresh to show changes (since AuthContext doesn't auto-update from this API call yet)
-            window.location.reload();
+            // Instead of reloading, refresh the user data in AuthContext
+            await refreshUser();
+
+            setSaveSuccess(true);
+            setIsEditing(false);
+
+            // Clear success message after 3 seconds
+            setTimeout(() => setSaveSuccess(false), 3000);
         } catch (error) {
             console.error("Error saving profile:", error);
             alert("Failed to save profile. Please try again.");
+        } finally {
+            setIsSaving(false);
         }
-        setIsEditing(false);
     };
 
     return (
@@ -113,6 +132,30 @@ export default function PersonalProfile() {
 
                 <form onSubmit={handleSave} className={styles.form}>
                     <div className={styles.formGroup}>
+                        <label>First Name</label>
+                        <input
+                            type="text"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            disabled={!isEditing}
+                            className={styles.input}
+                            placeholder="First Name"
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label>Last Name</label>
+                        <input
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            disabled={!isEditing}
+                            className={styles.input}
+                            placeholder="Last Name"
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
                         <label>Major</label>
                         <input
                             type="text"
@@ -137,14 +180,17 @@ export default function PersonalProfile() {
                     <div className={styles.actions}>
                         {isEditing ? (
                             <>
-                                <button type="button" className="btn btn-outline" onClick={() => setIsEditing(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary">Save Changes</button>
+                                <button type="button" className="btn btn-outline" onClick={() => setIsEditing(false)} disabled={isSaving}>Cancel</button>
+                                <button type="submit" className="btn btn-primary" disabled={isSaving}>
+                                    {isSaving ? 'Saving...' : 'Save Changes'}
+                                </button>
                             </>
                         ) : (
                             <button type="button" className="btn btn-primary" onClick={() => setIsEditing(true)}>Edit Profile</button>
                         )}
                     </div>
                 </form>
+                {saveSuccess && <p className={styles.successMessage} style={{ color: 'green', textAlign: 'center', marginTop: '1rem' }}>Profile updated successfully!</p>}
             </div>
 
             <div className={styles.links}>

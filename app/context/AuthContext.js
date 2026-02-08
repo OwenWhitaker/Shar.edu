@@ -9,48 +9,63 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const refreshUser = async (firebaseUser) => {
+        if (!firebaseUser) return;
+
+        let dbUser = {};
+        // Sync user to MongoDB (ensure they exist)
+        try {
+            await fetch('/api/user/sync', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email,
+                    displayName: firebaseUser.displayName,
+                    photoURL: firebaseUser.photoURL
+                }),
+            });
+
+            // Fetch full profile data from MongoDB
+            const res = await fetch(`/api/user/${firebaseUser.uid}`);
+            if (res.ok) {
+                dbUser = await res.json();
+            }
+        } catch (error) {
+            console.error("Failed to sync/fetch user:", error);
+        }
+
+        const onboardingCompleted = localStorage.getItem(`onboardingCompleted_${firebaseUser.uid}`) === 'true';
+        const tourCompleted = localStorage.getItem(`tourCompleted_${firebaseUser.uid}`) === 'true';
+        const storedName = localStorage.getItem(`userName_${firebaseUser.uid}`) || '';
+
+        const firstName = dbUser.firstName || (dbUser.name ? dbUser.name.split(' ')[0] : "First");
+        const lastName = dbUser.lastName || (dbUser.name ? dbUser.name.split(' ').slice(1).join(' ') : "Last");
+
+        // Prioritize DB data over Firebase/Local storage
+        setUser({
+            uid: firebaseUser.uid,
+            id: firebaseUser.uid,
+            email: firebaseUser.email,
+            onboardingCompleted,
+            tourCompleted,
+            firstName,
+            lastName,
+            name: dbUser.name || (firstName && lastName ? `${firstName} ${lastName}` : "First Last"),
+            bio: dbUser.bio || '',
+            major: dbUser.major || '',
+            image: dbUser.image || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${firebaseUser.email}`,
+            numListings: dbUser.numListings || 0,
+            rating: dbUser.rating || 0
+        });
+    };
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             if (firebaseUser) {
-                // Fetch additional user data from localStorage since DB is unimplemented/partially implemented
-                const onboardingCompleted = localStorage.getItem(`onboardingCompleted_${firebaseUser.uid}`) === 'true';
-                const tourCompleted = localStorage.getItem(`tourCompleted_${firebaseUser.uid}`) === 'true';
-                const storedName = localStorage.getItem(`userName_${firebaseUser.uid}`) || '';
-
-                // Sync user to MongoDB (ensure they exist)
-                try {
-                    await fetch('/api/user/sync', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            uid: firebaseUser.uid,
-                            email: firebaseUser.email,
-                            displayName: firebaseUser.displayName,
-                            photoURL: firebaseUser.photoURL
-                        }),
-                    });
-
-                    // Fetch full profile data from MongoDB
-                    const res = await fetch(`/api/user/${firebaseUser.uid}`);
-                    if (res.ok) {
-                        const dbUser = await res.json();
-                        // Merge DB data with Firebase data
-                        firebaseUser = { ...firebaseUser, ...dbUser };
-                    }
-                } catch (error) {
-                    console.error("Failed to sync/fetch user:", error);
-                }
-
-                setUser({
-                    ...firebaseUser,
-                    onboardingCompleted: localStorage.getItem(`onboardingCompleted_${firebaseUser.uid}`) === 'true',
-                    tourCompleted: localStorage.getItem(`tourCompleted_${firebaseUser.uid}`) === 'true',
-                    name: firebaseUser.name || storedName || firebaseUser.displayName || firebaseUser.email.split('@')[0],
-                    bio: firebaseUser.bio || '',
-                    major: firebaseUser.major || ''
-                });
+                await refreshUser(firebaseUser);
             } else {
                 setUser(null);
             }
@@ -68,7 +83,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, logout }}>
+        <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, logout, refreshUser: () => refreshUser(auth.currentUser) }}>
             {children}
         </AuthContext.Provider>
     );

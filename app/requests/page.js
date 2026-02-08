@@ -1,12 +1,55 @@
 /* eslint-disable react/no-unescaped-entities */
-import { getRequestsForUser } from '../../lib/db';
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
 import RequestCard from '../../components/RequestCard';
 import styles from './page.module.css';
 
 export default function RequestsPage() {
-    // Hardcoded for MVP
-    const userId = 'u1';
-    const { incoming, outgoing } = getRequestsForUser(userId);
+    const [incoming, setIncoming] = useState([]);
+    const [outgoing, setOutgoing] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { user, isAuthenticated } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            router.push('/login');
+            return;
+        }
+
+        if (!user) return;
+
+        const fetchRequests = async () => {
+            try {
+                const response = await fetch(`/api/requests?userId=${user.id}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch requests');
+                }
+                const data = await response.json();
+                setIncoming(data.incoming || []);
+                setOutgoing(data.outgoing || []);
+            } catch (error) {
+                console.error('Error fetching requests:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRequests();
+    }, [user, isAuthenticated, router]);
+
+    if (loading) {
+        return (
+            <div className={styles.wrapper}>
+                <div className={`container ${styles.container}`}>
+                    <p>Loading requests...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.wrapper}>

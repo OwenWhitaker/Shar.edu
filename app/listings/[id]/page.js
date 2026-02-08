@@ -49,7 +49,8 @@ async function getListing(id) {
                     "lender.username": 1,
                     "lender.firebaseUid": 1,
                     "lender.bio": 1,
-                    "lender.major": 1
+                    "lender.major": 1,
+                    "lender.image": 1
                 }
             }
         ]).toArray();
@@ -61,6 +62,7 @@ async function getListing(id) {
         if (listing.lender) {
             listing.lender.name = listing.lender.username;
             listing.lender.id = listing.lender.firebaseUid;
+            listing.lender.image = listing.lender.image; // Explicit assignment
         }
 
         // Ensure tags is an array
