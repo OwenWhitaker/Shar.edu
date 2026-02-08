@@ -152,6 +152,10 @@ export default function PersonalProfile() {
                     View Trade History
                 </button>
 
+                <button className="btn btn-outline" style={{ width: '100%', marginBottom: '1rem' }} onClick={() => router.push('/my-listings')}>
+                    My Listings
+                </button>
+
                 <button className="btn btn-outline" style={{ width: '100%' }} onClick={() => router.push(`/users/${user.id}`)}>
                     View Public Profile
                 </button>

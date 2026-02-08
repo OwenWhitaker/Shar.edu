@@ -36,6 +36,11 @@ export default function ImageUpload({ name, multiple = false }) {
         processFiles(files);
     }, [processFiles]);
 
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
     const handleDrop = useCallback((e) => {
         e.preventDefault();
         const files = Array.from(e.dataTransfer.files);
