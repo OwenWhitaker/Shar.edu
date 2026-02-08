@@ -13,6 +13,7 @@ export default function PersonalProfile() {
     // Local state for editing form
     const [bio, setBio] = useState('');
     const [major, setMajor] = useState('');
+    const [imagePreview, setImagePreview] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
@@ -25,17 +26,48 @@ export default function PersonalProfile() {
             // Sync local state with user profile on load
             if (user.bio && bio !== user.bio) setBio(user.bio);
             if (user.major && major !== user.major) setMajor(user.major);
+            if (user.image && imagePreview !== user.image) setImagePreview(user.image);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated, user, router]);
 
     if (!user) return null;
 
-    const handleSave = (e) => {
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleSave = async (e) => {
         e.preventDefault();
-        // In a real app, update context/DB
+        try {
+            const response = await fetch(`/api/user/${user.uid}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    bio,
+                    major,
+                    image: imagePreview
+                }),
+            });
+
+            if (!response.ok) throw new Error('Failed to update profile');
+
+            // Refresh to show changes (since AuthContext doesn't auto-update from this API call yet)
+            window.location.reload();
+        } catch (error) {
+            console.error("Error saving profile:", error);
+            alert("Failed to save profile. Please try again.");
+        }
         setIsEditing(false);
-        alert("Profile updated (Mock)");
     };
 
     return (
@@ -44,8 +76,28 @@ export default function PersonalProfile() {
 
             <div className={styles.card}>
                 <div className={styles.header}>
-                    <div className={styles.avatarLarge}>
-                        <img src={user.image} alt={user.name} className={styles.avatarImg} />
+                    <div className={styles.avatarLarge} style={{ position: 'relative' }}>
+                        <img src={imagePreview || user.image} alt={user.name} className={styles.avatarImg} />
+                        {isEditing && (
+                            <>
+                                <label htmlFor="pfp-upload" style={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    background: 'rgba(0,0,0,0.4)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    borderRadius: '50%'
+                                }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                        <circle cx="12" cy="13" r="4" />
+                                    </svg>
+                                </label>
+                                <input id="pfp-upload" type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
+                            </>
+                        )}
                     </div>
                     <div>
                         <h2>{user.name}</h2>
