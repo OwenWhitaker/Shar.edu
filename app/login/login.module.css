@@ -46,6 +46,12 @@
     gap: 0.5rem;
 }
 
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
 .label {
     font-size: 0.9rem;
     font-weight: 600;
@@ -99,6 +105,26 @@
     font-size: 0.85rem;
     color: var(--text-secondary);
     margin-top: 1rem;
+}
+
+.textarea {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    font-size: 1rem;
+    outline: none;
+    transition: background 0.2s, border-color 0.2s;
+    background: var(--background);
+    resize: none;
+    min-height: 100px;
+    overflow-y: hidden;
+    line-height: 1.5;
+}
+
+.textarea:focus {
+    border-color: var(--primary);
+    background: white;
 }
 
 .footerContainer {

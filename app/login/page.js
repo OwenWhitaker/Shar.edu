@@ -29,12 +29,13 @@ function LoginForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(''); // Clear previous errors
         try {
-            // This line sends the data to your Firebase Dashboard
             await signInWithEmailAndPassword(auth, email, password);
             router.push('/');
         } catch (err) {
-            alert("Firebase error: " + err.message);
+            console.error("Login Error:", err);
+            setError("Incorrect email or password.");
         }
     };
 
@@ -47,6 +48,8 @@ function LoginForm() {
                 </div>
 
                 <form onSubmit={handleSubmit} className={styles.form}>
+                    {error && <p style={{ color: '#ff4d4d', fontSize: '0.85rem', marginBottom: '0.5rem', marginTop: '-0.5rem' }}>{error}</p>}
+
                     <div className={styles.formGroup}>
                         <label className={styles.label}>Email Address</label>
                         <input
@@ -71,8 +74,6 @@ function LoginForm() {
                             className={styles.input}
                         />
                     </div>
-
-                    {error && <p style={{ color: '#ff4d4d', fontSize: '0.85rem', marginBottom: '1rem' }}>{error}</p>}
 
                     <button
                         type="submit"
