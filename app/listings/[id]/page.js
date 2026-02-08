@@ -97,22 +97,13 @@ export default async function ListingDetail({ params }) {
         );
     }
 
-    // Fetch actual requests from the requests collection
-    const client = await clientPromise;
-    const db = client.db("borrowit");
-    const requests = await db.collection("requests").find({
-        listingId: new ObjectId(id)
-    }).toArray();
-
-    // Map IDs for consistency
-    const formattedRequests = requests.map(r => ({
-        ...r,
-        id: r._id.toString()
-    }));
+    // Requests are currently embedded or we might need to fetch them if we move to separate collection.
+    // For now, let's pass the listing.requests if it exists, or empty array.
+    const requests = listing.requests || [];
 
     return (
         <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
-            <ListingDetailView listing={listing} requests={formattedRequests} requestCount={formattedRequests.length} />
+            <ListingDetailView listing={listing} requests={requests} requestCount={requests.length} />
         </div>
     );
 }

@@ -88,8 +88,6 @@ export async function GET(request) {
                     "borrower.id": "$borrower.firebaseUid",
                     "borrower.name": "$borrower.username",
                     "borrower.image": 1,
-                    "borrower.rating": 1,
-                    "borrower.bio": 1,
                     "lender.id": "$lender.firebaseUid",
                     "lender.name": "$lender.username",
                     "lender.image": 1
