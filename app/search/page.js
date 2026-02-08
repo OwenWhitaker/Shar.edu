@@ -1,21 +1,66 @@
-import { getListings } from '../../lib/db';
+import clientPromise from '@/lib/mongodb';
 import styles from './page.module.css';
 import Link from 'next/link';
 import HeroSearch from '../../components/HeroSearch';
 
 export default async function SearchPage({ searchParams }) {
     const params = await searchParams;
-    const query = params.q?.toLowerCase() || '';
+    const query = params.q || '';
 
-    const allListings = getListings();
+    let filteredListings = [];
 
-    const filteredListings = allListings.filter(item => {
-        const matchesQuery = item.title.toLowerCase().includes(query) ||
-            item.description.toLowerCase().includes(query) ||
-            item.tags?.some(tag => tag.toLowerCase().includes(query));
+    try {
+        const client = await clientPromise;
+        const db = client.db("borrowit");
 
-        return matchesQuery;
-    });
+        const regex = new RegExp(query, 'i'); // Case-insensitive regex
+
+        const pipeline = [
+            {
+                $match: {
+                    $or: [
+                        { title: { $regex: regex } },
+                        { itemDescription: { $regex: regex } }, // Note: itemDescription field
+                        { tag: { $regex: regex } }
+                    ]
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "ownerUid",
+                    foreignField: "firebaseUid",
+                    as: "lender"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$lender",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    id: { $toString: "$_id" },
+                    title: 1,
+                    itemDescription: 1,
+                    description: "$itemDescription",
+                    tag: 1,
+                    image: "$photo",
+                    createdAt: 1,
+                    "lender.name": "$lender.username", // Map username to name
+                    "lender.username": 1
+                }
+            }
+        ];
+
+        filteredListings = await db.collection("listings").aggregate(pipeline).toArray();
+
+    } catch (e) {
+        console.error("Search error:", e);
+        // Fallback to empty or error state
+    }
 
     return (
         <div className={styles.wrapper}>

@@ -10,12 +10,12 @@
 
 .card {
     background: white;
-    border-radius: 20px;
-    padding: 1.25rem;
+    border-radius: 32px;
+    padding: 1.5rem;
     display: flex;
     gap: 1.5rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
     transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -35,7 +35,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: 20px;
     background: #f0f0f0;
 }
 
@@ -69,12 +69,12 @@
 
 .approved {
     background: #E8F5E9;
-    color: #4CAF50;
+    color: #2E7D32;
 }
 
 .rejected {
     background: #FFEBEE;
-    color: #F44336;
+    color: #D32F2F;
 }
 
 .date {

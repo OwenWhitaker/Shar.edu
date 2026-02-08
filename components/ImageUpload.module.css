@@ -4,17 +4,27 @@
 
 .dropZone {
     border: 2px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 2rem;
+    border-radius: 24px;
+    /* Matches other rounded containers */
+    padding: 4rem 2rem;
     text-align: center;
     position: relative;
     cursor: pointer;
-    background-color: #fafafa;
-    transition: border-color 0.2s;
+    background-color: var(--background);
+    /* Use app background or surface */
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .dropZone:hover {
     border-color: var(--primary);
+    background-color: #fff;
+    transform: scale(1.01);
 }
 
 .fileInput {
