@@ -5,51 +5,20 @@ import Link from 'next/link';
 import styles from './RequestCard.module.css';
 
 export default function RequestCard({ request, type }) {
-    const [status, setStatus] = useState(request.status);
-    const [loading, setLoading] = useState(false);
+    const [status] = useState(request.status);
 
     // Determine the other party's user object
     const otherUser = type === 'incoming' ? request.borrower : request.lender;
     const isPending = status === 'pending';
 
-    const handleStatusUpdate = async (newStatus) => {
-        setLoading(true);
-        try {
-            const response = await fetch(`/api/requests/${request.id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status: newStatus })
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update request');
-            }
-
-            const data = await response.json();
-            setStatus(data.status);
-        } catch (error) {
-            console.error('Error updating request:', error);
-            alert('Failed to update request. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleAccept = (e) => {
-        e.preventDefault(); // Prevent Link navigation
-        handleStatusUpdate('accepted');
-    };
-
-    const handleDecline = (e) => {
-        e.preventDefault();
-        handleStatusUpdate('declined');
-    };
+    // Determine the link destination
+    const linkHref = type === 'incoming'
+        ? `/requests/review/${request.id}`
+        : `/listings/${request.listingId}`;
 
     return (
         <div className={styles.cardWrapper}>
-            <Link href={`/requests/${request.id}`} className={styles.cardLink}>
+            <Link href={linkHref} className={styles.cardLink}>
                 <div className={styles.card}>
                     <div className={styles.imageCol}>
                         <img
@@ -85,21 +54,8 @@ export default function RequestCard({ request, type }) {
                         </div>
 
                         {type === 'incoming' && isPending && (
-                            <div className={styles.actions}>
-                                <button
-                                    className={`${styles.btn} ${styles.btnAccept}`}
-                                    onClick={handleAccept}
-                                    disabled={loading}
-                                >
-                                    {loading ? 'Processing...' : 'Accept'}
-                                </button>
-                                <button
-                                    className={`${styles.btn} ${styles.btnDecline}`}
-                                    onClick={handleDecline}
-                                    disabled={loading}
-                                >
-                                    {loading ? 'Processing...' : 'Decline'}
-                                </button>
+                            <div className={styles.reviewPrompt}>
+                                <span className={styles.reviewText}>Click to review request →</span>
                             </div>
                         )}
                     </div>
