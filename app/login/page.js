@@ -28,17 +28,12 @@ function LoginForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setLoading(true);
-
         try {
+            // This line sends the data to your Firebase Dashboard
             await signInWithEmailAndPassword(auth, email, password);
-            // Redirection is handled by the onAuthStateChanged listener above
+            router.push('/');
         } catch (err) {
-            setError('Invalid email or password. Please try again.');
-            console.error("Firebase Login Error:", err.code, err.message);
-        } finally {
-            setLoading(false);
+            alert("Firebase error: " + err.message);
         }
     };
 
@@ -86,6 +81,9 @@ function LoginForm() {
                         {loading ? 'Signing in...' : 'Continue with Email'}
                     </button>
                 </form>
+                <p className={styles.note}>
+                    New here? <a href="/register" style={{ color: '#0070f3' }}>Create an account</a>
+                </p>
                 <p className={styles.note}>*Access restricted to Verified Students only.</p>
             </div>
         </div>
