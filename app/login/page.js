@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { auth } from '@/lib/firebase'; // Importing the auth instance we just configured
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import styles from './login.module.css';
+import { useState, useEffect, Suspense } from 'react';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
+import styles from './login.module.css';
 
-export default function LoginPage() {
+function LoginForm() {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState(''); // Added password state
-    const [error, setError] = useState(''); // Added error state for feedback
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
@@ -18,7 +18,7 @@ export default function LoginPage() {
 
     // Handle redirection if already logged in
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 router.push(returnUrl);
             }
@@ -33,7 +33,7 @@ export default function LoginPage() {
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            // Redirection is handled by the useEffect onAuthStateChanged listener
+            // Redirection is handled by the onAuthStateChanged listener above
         } catch (err) {
             setError('Invalid email or password. Please try again.');
             console.error("Firebase Login Error:", err.code, err.message);
@@ -89,5 +89,13 @@ export default function LoginPage() {
                 <p className={styles.note}>*Access restricted to Verified Students only.</p>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className={styles.container}>Loading...</div>}>
+            <LoginForm />
+        </Suspense>
     );
 }
