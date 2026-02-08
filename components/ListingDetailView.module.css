@@ -1,0 +1,170 @@
+.container {
+    width: 100%;
+    background: white;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.imageSection {
+    background: #f8f9fa;
+    border-radius: var(--radius);
+    overflow: hidden;
+    height: 100%;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mainImageContainer {
+    width: 100%;
+    height: 100%;
+}
+
+.mainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-height: 500px;
+}
+
+.detailsSection {
+    padding: 1rem 0;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+    line-height: 1.2;
+}
+
+.meta {
+    display: flex;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.category {
+    font-weight: 500;
+    color: var(--primary-light);
+    background: rgba(0, 51, 102, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.lenderCard {
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+    background: #fff;
+    transition: box-shadow 0.2s;
+}
+
+.lenderLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.lenderLink:hover .lenderName {
+    text-decoration: underline;
+}
+
+.lenderHeader {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.lenderAvatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--gray-200);
+    flex-shrink: 0;
+}
+
+.avatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatarPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--gray-200);
+}
+
+.lenderName {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.lenderMajor {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.lenderRating {
+    font-size: 0.9rem;
+}
+
+.description h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+}
+
+.description p {
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    background: #f0f0f0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.requestCount {
+    color: #d32f2f;
+    font-weight: 600;
+    background: #ffebee;
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    font-size: 0.85rem;
+}

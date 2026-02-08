@@ -1,0 +1,124 @@
+.cardLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background: white;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.cardLink:hover .card {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--primary-light);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge.approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge.rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.content {
+    display: flex;
+    gap: 1rem;
+}
+
+.itemInfo {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: var(--gray-200);
+}
+
+.title {
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    display: block;
+}
+
+.cardLink:hover .title {
+    text-decoration: underline;
+}
+
+.role {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.partnerName {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.acceptBtn {
+    flex: 1;
+    padding: 0.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.rejectBtn {
+    flex: 1;
+    padding: 0.5rem;
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    border-radius: 4px;
+    cursor: pointer;
+}

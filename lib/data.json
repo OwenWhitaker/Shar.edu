@@ -1,0 +1,95 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Owen Whitaker",
+      "email": "owen@university.edu",
+      "image": "https://api.dicebear.com/7.x/initials/svg?seed=OW",
+      "major": "Computer Science",
+      "bio": "Senior CS student. Love photography and hiking.",
+      "rating": 4.8
+    },
+    {
+      "id": "u2",
+      "name": "Sarah Chen",
+      "email": "sarah@university.edu",
+      "image": "https://api.dicebear.com/7.x/initials/svg?seed=SC",
+      "major": "Design",
+      "bio": "Design major looking for props and tech.",
+      "rating": 4.9
+    }
+  ],
+  "listings": [
+    {
+      "id": "l1",
+      "title": "Sony A7III Camera Kit",
+      "description": "Includes 28-70mm lens. Perfect for photography class assignments. In great condition.",
+      "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1000&q=80",
+      "lenderId": "u2",
+      "price": "Free",
+      "tags": [
+        "camera",
+        "photography",
+        "sony"
+      ],
+      "createdAt": "2023-10-01T10:00:00Z",
+      "rating": 5
+    },
+    {
+      "id": "l2",
+      "title": "Graphing Calculator TI-84",
+      "description": "Standard TI-84 Plus CE. Color screen. Charged and ready.",
+      "image": "https://images.unsplash.com/photo-1594980596853-75afbd77785c?auto=format&fit=crop&w=1000&q=80",
+      "lenderId": "u1",
+      "price": "$5/week",
+      "category": "School Supplies",
+      "tags": [
+        "calculator",
+        "math",
+        "engineering"
+      ],
+      "createdAt": "2023-10-02T14:30:00Z",
+      "rating": 4.5
+    },
+    {
+      "id": "l3",
+      "title": "Camping Tent (2 Person)",
+      "description": "Lightweight REI tent. Great for weekend trips. Easy setup.",
+      "image": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1000&q=80",
+      "lenderId": "u1",
+      "price": "$10/weekend",
+      "category": "Outdoor",
+      "tags": [
+        "camping",
+        "outdoor",
+        "tent"
+      ],
+      "createdAt": "2023-10-05T09:15:00Z",
+      "rating": 4.8
+    },
+    {
+      "id": "l1770517880717",
+      "createdAt": "2026-02-08T02:31:20.717Z",
+      "rating": 0,
+      "title": "jdlfnsldng",
+      "description": "laksjdf",
+      "category": "School Supplies",
+      "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1000&q=80",
+      "tags": [
+        ";aoisudf"
+      ],
+      "lenderId": "u1"
+    }
+  ],
+  "reviews": [],
+  "requests": [
+    {
+      "id": "r1770519564664",
+      "createdAt": "2026-02-08T02:59:24.664Z",
+      "status": "pending",
+      "listingId": "l1",
+      "lenderId": "u2",
+      "borrowerId": "u1"
+    }
+  ]
+}
