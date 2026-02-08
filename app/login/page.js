@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useAuth } from '../context/AuthContext';
 import styles from './login.module.css';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginForm() {
     const [email, setEmail] = useState('');
-    const { login, isAuthenticated } = useAuth(); // Assuming login returns success/fail or we check state
+    const { login, isAuthenticated } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
     const returnUrl = searchParams.get('returnUrl') || '/';
@@ -52,5 +52,13 @@ export default function LoginPage() {
                 <p className={styles.note}>*Access restricted to Verified Students only.</p>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className={styles.container}>Loading...</div>}>
+            <LoginForm />
+        </Suspense>
     );
 }
