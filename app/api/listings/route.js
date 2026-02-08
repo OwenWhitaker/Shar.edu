@@ -3,8 +3,16 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request) {
     try {
+        const { searchParams } = new URL(request.url);
+        const limitStr = searchParams.get('limit');
+        const pageStr = searchParams.get('page');
+
+        const limit = limitStr ? parseInt(limitStr, 10) : 50; // Default to 50
+        const page = pageStr ? parseInt(pageStr, 10) : 1;
+        const skip = (page - 1) * limit;
+
         const client = await clientPromise.catch(err => {
             console.error("Database connection failed:", err);
             return null;
@@ -16,32 +24,11 @@ export async function GET() {
 
         const db = client.db("borrowit");
 
-        const listings = await db.collection("listings")
-            .find({})
-            .sort({ createdAt: -1 })
-            .toArray();
-
-        // Map listings to handle "lender" field (need to join users? No, prompt mentions "ownerUid" but page.js displays "lender.name".)
-        // Prompt says: "Users Collection: firebaseUid, username, bio, major, description, numListings."
-        // "Listings Collection: ownerUid, etc"
-        // Page.js expects `lender.name`.
-        // I should probably fetch users too or do a join to populate `lender`.
-        // Given complexity, and typical NoSQL, fetching users for listings or doing lookup is needed.
-        // Let's do a simple $lookup to populate lender info.
-
-        // However, standard join in MongoDB aggregate:
-        // {
-        //   $lookup: {
-        //     from: "users",
-        //     localField: "ownerUid",
-        //     foreignField: "firebaseUid",
-        //     as: "lender"
-        //   }
-        // }
-        // Let's use aggregation.
-
+        // Use aggregation for efficient join and pagination
         const listingsWithLender = await db.collection("listings").aggregate([
             { $sort: { createdAt: -1 } },
+            { $skip: skip },
+            { $limit: limit },
             {
                 $lookup: {
                     from: "users",
@@ -64,7 +51,7 @@ export async function GET() {
                     itemDescription: 1,
                     tag: 1,
                     photo: 1,
-                    photos: 1, // Include new field
+                    photos: { $slice: ["$photos", 1] }, // Optimize: Only fetch the first photo for the card view
                     numRequests: 1,
                     requests: 1,
                     createdAt: 1,

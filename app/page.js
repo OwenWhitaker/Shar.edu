@@ -15,7 +15,7 @@ export default function Home() {
     const { user } = useAuth();
 
     useEffect(() => {
-        fetch('/api/listings')
+        fetch('/api/listings?limit=6')
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {

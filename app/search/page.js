@@ -25,6 +25,7 @@ export default async function SearchPage({ searchParams }) {
                     ]
                 }
             },
+            { $limit: 20 },
             {
                 $lookup: {
                     from: "users",
