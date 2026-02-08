@@ -4,7 +4,6 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import HeroClouds from '../components/HeroClouds';
 import HeroSearch from '../components/HeroSearch';
-
 import ListingCardSkeleton from '../components/ListingCardSkeleton';
 import ListingCard from '../components/ListingCard';
 
@@ -35,7 +34,6 @@ export default function Home() {
     return (
         <div className={styles.container}>
             {/* Hero Section */}
-            {/* Hero Section */}
             <section className={styles.hero}>
                 <HeroClouds />
                 <div className={styles.heroContent}>
@@ -54,7 +52,7 @@ export default function Home() {
             <section className={styles.featured}>
                 <div className="container">
                     <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>So much to borrow, so little time...</h2>
+                        <h2 className={styles.sectionTitle}>Today&apos;s Top Picks</h2>
                         <Link href="/search" className={styles.viewAllLink}>
                             View All <span className={styles.arrow}>→</span>
                         </Link>

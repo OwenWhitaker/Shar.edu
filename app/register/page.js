@@ -34,7 +34,7 @@ export default function RegisterPage() {
                 }),
             });
 
-            router.push('/'); // Redirect to home/marketplace after success
+            router.push('/onboarding'); // Redirect to onboarding after success
         } catch (err) {
             setError(err.message);
             console.error("Signup Error:", err.code);
