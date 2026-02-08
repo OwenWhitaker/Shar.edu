@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useAuth } from '../context/AuthContext';
 import styles from './login.module.css';
 
-export default function Login() {
+function LoginForm() {
     const [email, setEmail] = useState('');
     const { login } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
@@ -49,5 +49,13 @@ export default function Login() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function Login() {
+    return (
+        <Suspense fallback={<div className={styles.container}>Loading...</div>}>
+            <LoginForm />
+        </Suspense>
     );
 }
