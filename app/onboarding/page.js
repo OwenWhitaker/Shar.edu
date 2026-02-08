@@ -8,15 +8,14 @@ import styles from '../login/login.module.css'; // Reusing login styles for cons
 export default function OnboardingPage() {
     const { user, isAuthenticated } = useAuth();
     const router = useRouter();
-    const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
 
     // Form State
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [university, setUniversity] = useState('Jupiter');
     const [major, setMajor] = useState('');
     const [bio, setBio] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [profileImage, setProfileImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
 
@@ -35,17 +34,6 @@ export default function OnboardingPage() {
                 setImagePreview(reader.result);
             };
             reader.readAsDataURL(file);
-        }
-    };
-
-    const handleNext = (e) => {
-        e.preventDefault();
-        if (step === 1) {
-            if (firstName && lastName) {
-                setStep(2);
-            } else {
-                alert("Please fill in all required fields.");
-            }
         }
     };
 
@@ -95,93 +83,89 @@ export default function OnboardingPage() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.card}>
+            <div className={styles.card} style={{ maxWidth: '600px' }}>
                 <h1 className={styles.title}>Welcome!</h1>
                 <p className={styles.subtitle}>Let's set up your profile.</p>
 
-                <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                    <span style={{ fontWeight: step === 1 ? 'bold' : 'normal', color: step === 1 ? '#0070f3' : '#666' }}>1. Basic Info</span>
-                    <span style={{ color: '#ccc' }}>&gt;</span>
-                    <span style={{ fontWeight: step === 2 ? 'bold' : 'normal', color: step === 2 ? '#0070f3' : '#666' }}>2. Profile</span>
-                </div>
+                <form onSubmit={handleComplete} className={styles.form} style={{ marginTop: '2rem' }}>
+                    {/* Profile Image Section - Top for emphasis */}
+                    <div className={styles.inputGroup} style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                        <div style={{ margin: '10px auto', width: '120px', height: '120px', borderRadius: '50%', overflow: 'hidden', background: '#f8f9fa', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #eaeaea' }}>
+                            {imagePreview ? (
+                                <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                    <circle cx="12" cy="13" r="4" />
+                                </svg>
+                            )}
+                        </div>
+                        <label htmlFor="file-upload" className="btn btn-outline" style={{ cursor: 'pointer', display: 'inline-block', marginTop: '0.5rem', fontSize: '0.9rem', padding: '0.5rem 1rem' }}>
+                            Upload Photo
+                        </label>
+                        <input
+                            id="file-upload"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            style={{ display: 'none' }}
+                        />
+                    </div>
 
-                <form onSubmit={step === 1 ? handleNext : handleComplete} className={styles.form}>
-                    {step === 1 && (
-                        <>
-                            <div className={styles.inputGroup}>
-                                <label>First Name *</label>
-                                <input
-                                    type="text"
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                    required
-                                    className={styles.input}
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <label>Last Name *</label>
-                                <input
-                                    type="text"
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                    required
-                                    className={styles.input}
-                                />
-                            </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className={styles.inputGroup}>
+                            <label>First Name *</label>
+                            <input
+                                type="text"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                required
+                                className={styles.input}
+                                placeholder="Jane"
+                            />
+                        </div>
+                        <div className={styles.inputGroup}>
+                            <label>Last Name *</label>
+                            <input
+                                type="text"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                required
+                                className={styles.input}
+                                placeholder="Doe"
+                            />
+                        </div>
+                    </div>
 
-                            <div className={styles.inputGroup}>
-                                <label>Major</label>
-                                <input
-                                    type="text"
-                                    value={major}
-                                    onChange={(e) => setMajor(e.target.value)}
-                                    className={styles.input}
-                                />
-                            </div>
-                            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Next</button>
-                        </>
-                    )}
+                    <div className={styles.inputGroup}>
+                        <label>Major</label>
+                        <input
+                            type="text"
+                            value={major}
+                            onChange={(e) => setMajor(e.target.value)}
+                            className={styles.input}
+                            placeholder="Computer Science"
+                        />
+                    </div>
 
-                    {step === 2 && (
-                        <>
-                            <div className={styles.inputGroup} style={{ textAlign: 'center' }}>
-                                <label>Profile Picture</label>
-                                <div style={{ margin: '10px auto', width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    {imagePreview ? (
-                                        <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                    ) : (
-                                        <span style={{ color: '#aaa', fontSize: '30px' }}>📷</span>
-                                    )}
-                                </div>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    style={{ display: 'block', margin: '0 auto' }}
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <label>Bio</label>
-                                <textarea
-                                    value={bio}
-                                    onChange={(e) => {
-                                        setBio(e.target.value);
-                                        // Auto-expand height
-                                        e.target.style.height = 'inherit';
-                                        e.target.style.height = `${e.target.scrollHeight}px`;
-                                    }}
-                                    className={styles.textarea}
-                                    placeholder="Tell us a bit about yourself..."
-                                />
-                            </div>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setStep(1)}>Back</button>
-                                <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={loading}>
-                                    {loading ? 'Saving...' : 'Complete Profile'}
-                                </button>
-                            </div>
-                        </>
-                    )}
+                    <div className={styles.inputGroup}>
+                        <label>Bio</label>
+                        <textarea
+                            value={bio}
+                            onChange={(e) => {
+                                setBio(e.target.value);
+                                e.target.style.height = 'inherit';
+                                e.target.style.height = `${e.target.scrollHeight}px`;
+                            }}
+                            className={styles.textarea}
+                            placeholder="Tell us a bit about yourself..."
+                            rows={3}
+                        />
+                    </div>
+
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} disabled={loading}>
+                        {loading ? 'Saving...' : 'Complete Profile'}
+                    </button>
                 </form>
             </div>
         </div>

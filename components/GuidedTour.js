@@ -50,7 +50,7 @@ export default function GuidedTour({ userId }) {
         const onboardingCompleted = localStorage.getItem(`onboardingCompleted_${userId}`) === 'true';
         const tourCompleted = localStorage.getItem(`tourCompleted_${userId}`) === 'true';
 
-        if (onboardingCompleted && !tourCompleted) {
+        if (pathname === '/' && onboardingCompleted && !tourCompleted) {
             setIsActive(true);
             setCurrentStep(0);
         }
@@ -63,7 +63,7 @@ export default function GuidedTour({ userId }) {
 
         window.addEventListener('startGuidedTour', startTour);
         return () => window.removeEventListener('startGuidedTour', startTour);
-    }, [userId]);
+    }, [userId, pathname]);
 
     useEffect(() => {
         if (!isActive || currentStep < 0 || currentStep >= steps.length) return;

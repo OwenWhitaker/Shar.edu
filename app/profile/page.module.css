@@ -4,6 +4,10 @@
     padding: 2rem 1rem;
 }
 
+.container :global(.btn) {
+    border-radius: 100px;
+}
+
 .pageTitle {
     font-size: 2rem;
     margin-bottom: 2rem;
@@ -13,7 +17,7 @@
 
 .card {
     background: white;
-    border-radius: var(--radius);
+    border-radius: 40px;
     box-shadow: var(--shadow-sm);
     padding: 2rem;
     margin-bottom: 2rem;
@@ -79,14 +83,33 @@
     font-size: 0.9rem;
 }
 
-.input,
-.textarea {
-    padding: 0.75rem;
+.input {
+    padding: 0.75rem 1.5rem;
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 100px !important;
     font-family: inherit;
     font-size: 1rem;
     transition: border-color 0.2s;
+    width: 100%;
+}
+
+.textarea {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 20px !important;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+/* Fallback/Force for standard HTML elements if class fails */
+.form input {
+    border-radius: 100px !important;
+}
+
+.form textarea {
+    border-radius: 20px !important;
 }
 
 .input:focus,
