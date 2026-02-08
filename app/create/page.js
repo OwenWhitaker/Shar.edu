@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from '../context/AuthContext';
-import { createListingAction } from '../actions';
+// import { createListingAction } from '../actions';
 import styles from './page.module.css';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -14,6 +14,40 @@ export default function CreateListing() {
     useEffect(() => {
         // Redirect if not logged in (Mock)
     }, [isAuthenticated, router]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!user) return;
+
+        const formData = new FormData(e.target);
+
+        const listingData = {
+            ownerUid: user.uid,
+            title: formData.get('title'),
+            itemDescription: formData.get('description'),
+            tag: formData.get('tags'),
+            photo: formData.get('image'), // ImageUpload uses name="image"
+        };
+
+        try {
+            const res = await fetch('/api/listings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(listingData),
+            });
+
+            if (res.ok) {
+                router.push('/');
+            } else {
+                console.error("Failed to create listing");
+            }
+        } catch (error) {
+            console.error("Error creating listing:", error);
+        }
+    };
 
     if (!isAuthenticated) {
         return (
@@ -33,8 +67,8 @@ export default function CreateListing() {
                 <h1 className={styles.title}>Create Listing</h1>
                 <p className={styles.subtitle}>Share your item with the community.</p>
 
-                <form action={createListingAction} className={styles.form}>
-                    <input type="hidden" name="lenderId" value={user.id} />
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <input type="hidden" name="lenderId" value={user.uid} />
 
                     <div className={styles.formGroup}>
                         <label className={styles.label} htmlFor="title">Item Title</label>

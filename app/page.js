@@ -1,11 +1,20 @@
+"use client";
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getListings } from '../lib/db';
 import styles from './page.module.css';
 import HeroClouds from '../components/HeroClouds';
 import HeroSearch from '../components/HeroSearch';
 
 export default function Home() {
-    const listings = getListings();
+    const [listings, setListings] = useState([]);
+
+    useEffect(() => {
+        fetch('/api/listings')
+            .then(res => res.json())
+            .then(data => setListings(data))
+            .catch(err => console.error("Failed to fetch listings", err));
+    }, []);
+
     const featuredListings = listings.slice(0, 6); // Show top 6
 
     return (
