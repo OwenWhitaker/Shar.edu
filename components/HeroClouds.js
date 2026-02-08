@@ -56,27 +56,32 @@ function GLBModel({ url, position, rotation, scale = 1 }) {
 function Scene({ scrollY }) {
     const groupRef = useRef();
 
+    // Calculate offsets based on scroll
+    // Move outwards (x) and slightly down/back
+    const moveFactor = scrollY * 0.02;
+    const rotateFactor = scrollY * 0.002;
+
     return (
         <group ref={groupRef}>
             {/* 
                 Camera GLB - Left 
-                Scale reduced ~20% (0.08 -> 0.065)
-             */}
+                Base X: -12. Moves further left (-moveFactor)
+            */}
             <GLBModel
                 url="/camera.glb"
-                position={[-8.5, 1, -2]}
-                rotation={[0.4, 0.6, 0.2]}
+                position={[-12 - moveFactor, 1, -2]}
+                rotation={[0.4 + rotateFactor, 0.6 + rotateFactor, 0.2]}
                 scale={0.065}
             />
 
             {/* 
                 Drill GLB - Right 
-                Scale reduced ~20% (0.05 -> 0.04)
-             */}
+                Base X: 12. Moves further right (+moveFactor)
+            */}
             <GLBModel
                 url="/drill.glb"
-                position={[8.5, 0, -2]}
-                rotation={[0.5, -0.6, -0.3]}
+                position={[12 + moveFactor, 0, -2]}
+                rotation={[0.5 + rotateFactor, -0.6 - rotateFactor, -0.3]}
                 scale={0.04}
             />
 
