@@ -29,12 +29,16 @@ export async function PATCH(request, { params }) {
         const db = client.db("borrowit");
         const body = await request.json();
 
-        const { bio, major, description } = body;
+        const { bio, major, description, firstName, lastName, image } = body;
 
         const updateData = {};
         if (bio !== undefined) updateData.bio = bio;
         if (major !== undefined) updateData.major = major;
         if (description !== undefined) updateData.description = description;
+        if (firstName !== undefined) updateData.firstName = firstName;
+        if (lastName !== undefined) updateData.lastName = lastName;
+        if (firstName && lastName) updateData.name = `${firstName} ${lastName}`;
+        if (image !== undefined) updateData.image = image;
 
         const result = await db.collection("users").updateOne(
             { firebaseUid: id },

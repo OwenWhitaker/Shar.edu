@@ -22,8 +22,7 @@ export default function OnboardingPage() {
 
     useEffect(() => {
         if (!loading && !isAuthenticated) {
-            // Optionally redirect if not logged in, but newly registered users might take a moment to propagate
-            // router.push('/login');
+            router.push('/login');
         }
     }, [isAuthenticated, loading, router]);
 
@@ -59,19 +58,30 @@ export default function OnboardingPage() {
             // Simulate slight delay
             await new Promise(resolve => setTimeout(resolve, 800));
 
-            // Save onboarding status to localStorage since DB is unimplemented
+            // Save to MongoDB
+            const response = await fetch(`/api/user/${user.uid}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    name: `${firstName} ${lastName}`,
+                    major,
+                    bio,
+                    image: imagePreview, // Sending base64 string (not ideal for prod but works for MVP)
+                    onboardingCompleted: true
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update profile in database');
+            }
+
+            // Save onboarding status to localStorage as fallback/cache
             localStorage.setItem(`onboardingCompleted_${user.uid}`, 'true');
             localStorage.setItem(`userName_${user.uid}`, `${firstName} ${lastName}`);
-
-            // Optionally save other fields if needed for static display elsewhere
-            localStorage.setItem(`userProfile_${user.uid}`, JSON.stringify({
-                firstName,
-                lastName,
-                university,
-                major,
-                bio,
-                onboardingCompleted: true
-            }));
 
             // Redirect to home
             router.push('/');
