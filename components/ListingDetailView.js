@@ -4,8 +4,13 @@ import styles from './ListingDetailView.module.css';
 import ContactInteraction from './ContactInteraction';
 import BorrowButton from './BorrowButton';
 import Link from 'next/link';
+import StarRating from './StarRating';
+import { useAuth } from '../app/context/AuthContext';
 
-export default function ListingDetailView({ listing, requestCount = 0 }) {
+export default function ListingDetailView({ listing, requests = [], requestCount = 0 }) {
+    const { user } = useAuth();
+    const existingRequest = user ? requests.find(r => r.borrowerId === user.id) : null;
+
     if (!listing) return null;
 
     return (
@@ -27,10 +32,7 @@ export default function ListingDetailView({ listing, requestCount = 0 }) {
                     <div className={styles.meta}>
                         <span className={styles.date}>Posted {new Date(listing.createdAt).toLocaleDateString()}</span>
                         {requestCount > 0 && (
-                            <>
-                                <span className={styles.divider}>•</span>
-                                <span className={styles.requestCount}>🔥 {requestCount} already requesting</span>
-                            </>
+                            <span className={styles.requestCount}>🔥 {requestCount} interested</span>
                         )}
                     </div>
 
@@ -45,28 +47,35 @@ export default function ListingDetailView({ listing, requestCount = 0 }) {
                                     )}
                                 </div>
                                 <div className={styles.lenderInfo}>
+                                    <span className={styles.lenderLabel}>Lended by</span>
                                     <div className={styles.lenderName}>{listing.lender?.name}</div>
-                                    <div className={styles.lenderMajor}>{listing.lender?.major}</div>
-                                    <div className={styles.lenderRating}>⭐ {listing.lender?.rating} (12 reviews)</div>
+                                    <div className={styles.lenderRating}>
+                                        <span className={styles.ratingValue}>
+                                            {listing.lender?.rating > 0 ? `${listing.lender.rating}/5` : 'No ratings yet'}
+                                        </span>
+                                        {listing.lender?.rating > 0 && <StarRating rating={listing.lender.rating} />}
+                                    </div>
                                 </div>
                             </div>
                         </Link>
+                    </div>
 
+                    <div className={styles.actionGroup}>
+                        <BorrowButton
+                            listingId={listing.id}
+                            lenderId={listing.lender?.id}
+                            existingRequest={existingRequest}
+                        />
                         <ContactInteraction
                             lenderEmail={listing.lender?.email}
                             listingTitle={listing.title}
                             buttonLabel="Contact Lender"
                         />
-
-                        <BorrowButton
-                            listingId={listing.id}
-                            lenderId={listing.lender?.id}
-                        />
                     </div>
 
                     <div className={styles.description}>
-                        <h3>Description</h3>
-                        <p>{listing.description}</p>
+                        <h3 className={styles.sectionLabel}>About this item</h3>
+                        <p className={styles.descriptionText}>{listing.description}</p>
                     </div>
 
                     <div className={styles.tags}>

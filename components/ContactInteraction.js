@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import styles from './ContactInteraction.module.css';
 import ContactModal from './ContactModal';
 
 export default function ContactInteraction({ lenderEmail, listingTitle, buttonLabel = "Contact Lender" }) {
@@ -9,8 +10,7 @@ export default function ContactInteraction({ lenderEmail, listingTitle, buttonLa
     return (
         <>
             <button
-                className="btn btn-primary"
-                style={{ width: '100%', marginTop: '1rem' }}
+                className={styles.outlineButton}
                 onClick={() => setIsModalOpen(true)}
             >
                 {buttonLabel}
