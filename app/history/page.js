@@ -65,7 +65,9 @@ export default function HistoryPage() {
                                 <h3 className={styles.itemTitle}>{trade.itemTitle}</h3>
                                 <div className={styles.tradeMeta}>
                                     <span>{trade.borrowerId === user.uid ? 'Borrowed from' : 'Lent to'} <strong>{trade.otherPartyName}</strong></span>
-                                    <span className={styles.date}>{new Date(trade.completedAt).toLocaleDateString()}</span>
+                                    <span className={styles.date}>
+                                        {new Date(trade.completedAt).toLocaleDateString()} at {new Date(trade.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
                                 </div>
                             </div>
                             <div className={styles.statusBadge}>Completed</div>
