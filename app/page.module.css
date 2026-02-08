@@ -46,6 +46,19 @@
   z-index: 2;
 }
 
+.heroLogoContainer {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+}
+
+.heroLogo {
+  width: auto;
+  height: 60px;
+  object-fit: contain;
+}
+
 .heroTitle {
   font-size: 4.5rem;
   font-weight: 800;

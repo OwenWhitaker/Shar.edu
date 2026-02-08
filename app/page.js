@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
 import HeroClouds from '../components/HeroClouds';
@@ -42,6 +43,16 @@ export default function Home() {
             {/* Hero Section */}
             <section className={styles.hero}>
                 <HeroClouds />
+                <div className={styles.heroLogoContainer}>
+                    <Image
+                        src="/images/logo-white.png"
+                        alt="BorrowIt Logo"
+                        width={200}
+                        height={80}
+                        className={styles.heroLogo}
+                        priority
+                    />
+                </div>
                 <div className={styles.heroContent}>
                     <h1 className={styles.heroTitle}>
                         Borrow what<br />you need.
