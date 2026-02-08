@@ -4,12 +4,13 @@ import { useAuth } from '../context/AuthContext';
 // import { createListingAction } from '../actions';
 import styles from './page.module.css';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ImageUpload from '../../components/ImageUpload';
 
 export default function CreateListing() {
     const { user, isAuthenticated } = useAuth();
     const router = useRouter();
+    const [description, setDescription] = useState('');
 
     useEffect(() => {
         // Redirect if not logged in (Mock)
@@ -64,7 +65,12 @@ export default function CreateListing() {
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-                <h1 className={styles.title}>Create Listing</h1>
+                <div className={styles.createHeader}>
+                    <h1 className={styles.title}>Create Listing</h1>
+                    <button type="button" onClick={() => router.back()} className={styles.cancelButton} aria-label="Cancel">
+                        Cancel
+                    </button>
+                </div>
                 <p className={styles.subtitle}>Share your item with the community.</p>
 
                 <form onSubmit={handleSubmit} className={styles.form}>
@@ -84,8 +90,26 @@ export default function CreateListing() {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="description">Description</label>
-                        <textarea id="description" name="description" required rows="5" placeholder="Describe condition, pickup location, etc..." className={styles.textarea}></textarea>
+                        <label className={styles.label} htmlFor="description">
+                            Description <span style={{ fontWeight: 400, color: 'var(--text-secondary)', fontSize: '0.85rem', marginLeft: 'auto' }}>
+                                {description.length}/500 characters
+                            </span>
+                        </label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            required
+                            rows="5"
+                            placeholder="Describe condition, pickup location, etc..."
+                            className={styles.descriptionField}
+                            style={{ resize: 'none' }}
+                            value={description}
+                            onChange={(e) => {
+                                if (e.target.value.length <= 500) {
+                                    setDescription(e.target.value);
+                                }
+                            }}
+                        ></textarea>
                     </div>
 
                     <div className={styles.formGroup}>

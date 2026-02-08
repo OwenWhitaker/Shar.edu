@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import StarRating from '../../components/StarRating';
 
 export default function PersonalProfile() {
-    const { user, isAuthenticated } = useAuth();
+    const { user, isAuthenticated, logout } = useAuth();
     const router = useRouter();
 
     // Local state for editing form
@@ -96,9 +96,8 @@ export default function PersonalProfile() {
                 </button>
 
                 <button className="btn btn-outline" style={{ width: '100%', marginTop: '1rem', borderColor: '#d32f2f', color: '#d32f2f' }} onClick={() => {
-                    // Add logout logic here if needed, but for now just redirect or reuse component logic
-                    // Ideally the AuthContext logout should be used, but button just says Log Out
-                    router.push('/login'); // Basic redirect for now as placeholder
+                    logout();
+                    router.push('/');
                 }}>
                     Log Out
                 </button>

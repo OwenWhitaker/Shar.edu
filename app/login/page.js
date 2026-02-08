@@ -58,8 +58,8 @@ function LoginForm() {
                         />
                     </div>
 
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="password">Password</label>
+                    <div className={styles.formGroup}>
+                        <label htmlFor="password" className={styles.label}>Password</label>
                         <input
                             type="password"
                             id="password"
@@ -86,10 +86,12 @@ function LoginForm() {
                         Only verified university students can join.
                     </p>
                 </form>
-                <p className={styles.note}>
-                    New here? <a href="/register" style={{ color: '#0070f3' }}>Create an account</a>
-                </p>
-                <p className={styles.note}>*Access restricted to Verified Students only.</p>
+                <div className={styles.footerContainer}>
+                    <p className={styles.footerNote}>
+                        New here? <a href="/register" style={{ color: '#0070f3' }}>Create an account</a>
+                    </p>
+                    <p className={styles.footerNote}>*Access restricted to Verified Students only.</p>
+                </div>
             </div>
         </div>
     );

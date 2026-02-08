@@ -5,20 +5,30 @@ import styles from './page.module.css';
 import HeroClouds from '../components/HeroClouds';
 import HeroSearch from '../components/HeroSearch';
 
+import ListingCardSkeleton from '../components/ListingCardSkeleton';
+
 export default function Home() {
     const [listings, setListings] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetch('/api/listings')
             .then(res => res.json())
-            .then(data => setListings(data))
-            .catch(err => console.error("Failed to fetch listings", err));
+            .then(data => {
+                setListings(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Failed to fetch listings", err);
+                setLoading(false);
+            });
     }, []);
 
     const featuredListings = listings.slice(0, 6); // Show top 6
 
     return (
         <div className={styles.container}>
+            {/* Hero Section */}
             {/* Hero Section */}
             <section className={styles.hero}>
                 <HeroClouds />
@@ -45,7 +55,14 @@ export default function Home() {
                     </div>
 
                     <div className={styles.grid}>
-                        {featuredListings.map(listing => (
+                        {loading && (
+                            <>
+                                <ListingCardSkeleton />
+                                <ListingCardSkeleton />
+                                <ListingCardSkeleton />
+                            </>
+                        )}
+                        {!loading && featuredListings.map(listing => (
                             <Link href={`/listings/${listing.id}`} key={listing.id} className={styles.cardLink}>
                                 <div className="card">
                                     <div className={styles.cardImageContainer}>
@@ -54,15 +71,15 @@ export default function Home() {
                                             alt={listing.title}
                                             className={styles.cardImage}
                                         />
-                                        <div className={styles.cardOverlay}>
-                                            <span className={styles.lenderBadge}>
-                                                {listing.lender?.name?.[0] || 'U'}
-                                            </span>
-                                        </div>
                                     </div>
                                     <div className={styles.cardContent}>
-                                        <h3 className={styles.cardTitle}>{listing.title}</h3>
-                                        <p className={styles.cardMeta}>Posted by {listing.lender?.name}</p>
+                                        <div className={styles.cardText}>
+                                            <h3 className={styles.cardTitle}>{listing.title}</h3>
+                                            <p className={styles.cardMeta}>Posted by {listing.lender?.name}</p>
+                                        </div>
+                                        <span className={styles.lenderBadge}>
+                                            {listing.lender?.name?.[0] || 'U'}
+                                        </span>
                                     </div>
                                 </div>
                             </Link>

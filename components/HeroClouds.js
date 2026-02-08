@@ -6,8 +6,10 @@ import { Float, Environment, ContactShadows, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 // --- Shared Material ---
+// --- Custom Gradient Material ---
+// --- Shared Material ---
 const solidMaterial = new THREE.MeshPhysicalMaterial({
-    color: "#ff8a65",
+    color: "#F24423",
     emissive: "#bf360c",
     emissiveIntensity: 0.2,
     roughness: 0.3,

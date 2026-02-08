@@ -82,6 +82,7 @@ export async function GET() {
 
 export async function POST(request) {
     try {
+        console.log("Connecting to MongoDB... URI present?", !!process.env.MONGODB_URI);
         const client = await clientPromise;
         const db = client.db("borrowit");
         const body = await request.json();
