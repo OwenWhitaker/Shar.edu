@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getListings } from '../lib/db';
 import styles from './page.module.css';
 import HeroClouds from '../components/HeroClouds';
+import HeroSearch from '../components/HeroSearch';
 
 export default function Home() {
     const listings = getListings();
@@ -20,18 +21,7 @@ export default function Home() {
                         The student marketplace.
                     </p>
 
-                    <div className={styles.searchWrapper}>
-                        <div className={styles.searchContainer}>
-                            <input
-                                type="text"
-                                placeholder="Search for items..."
-                                className={styles.heroSearchInput}
-                            />
-                            <button className={styles.heroSearchBtn}>
-                                🔍
-                            </button>
-                        </div>
-                    </div>
+                    <HeroSearch />
                 </div>
             </section>
 

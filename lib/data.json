@@ -26,7 +26,6 @@
       "description": "Includes 28-70mm lens. Perfect for photography class assignments. In great condition.",
       "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1000&q=80",
       "lenderId": "u2",
-      "price": "Free",
       "tags": [
         "camera",
         "photography",
@@ -41,7 +40,6 @@
       "description": "Standard TI-84 Plus CE. Color screen. Charged and ready.",
       "image": "https://images.unsplash.com/photo-1594980596853-75afbd77785c?auto=format&fit=crop&w=1000&q=80",
       "lenderId": "u1",
-      "price": "$5/week",
       "category": "School Supplies",
       "tags": [
         "calculator",
@@ -57,7 +55,6 @@
       "description": "Lightweight REI tent. Great for weekend trips. Easy setup.",
       "image": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1000&q=80",
       "lenderId": "u1",
-      "price": "$10/weekend",
       "category": "Outdoor",
       "tags": [
         "camping",

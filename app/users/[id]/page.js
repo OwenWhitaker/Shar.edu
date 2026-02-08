@@ -1,6 +1,7 @@
 import { getUser, getListings } from '../../../lib/db';
 import styles from './page.module.css';
 import Link from 'next/link';
+import StarRating from '../../../components/StarRating';
 
 export default async function UserProfile({ params }) {
     const { id } = await params;
@@ -20,14 +21,18 @@ export default async function UserProfile({ params }) {
                         <img src={user.image} alt={user.name} className={styles.avatarImg} />
                     </div>
                     <h1 className={styles.name}>{user.name}</h1>
-                    <p className={styles.major}>{user.major}</p>
+                    <p className={styles.major}>Major: {user.major}</p>
                     <div className={styles.bioBox}>
                         <p className={styles.bio}>{user.bio}</p>
                     </div>
                     <div className={styles.statsRow}>
                         <div className={styles.stat}>
-                            <span className={styles.statValue}>{user.rating}</span>
-                            <span className={styles.statLabel}>Rating</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+                                <span className={styles.statValue}>
+                                    {user.rating > 0 ? `${user.rating}/5` : 'No ratings yet'}
+                                </span>
+                                {user.rating > 0 && <StarRating rating={user.rating} />}
+                            </div>
                         </div>
                         <div className={styles.stat}>
                             <span className={styles.statValue}>{userListings.length}</span>

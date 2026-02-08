@@ -4,6 +4,7 @@ import styles from './ListingDetailView.module.css';
 import ContactInteraction from './ContactInteraction';
 import BorrowButton from './BorrowButton';
 import Link from 'next/link';
+import StarRating from './StarRating';
 
 export default function ListingDetailView({ listing, requestCount = 0 }) {
     if (!listing) return null;
@@ -22,7 +23,6 @@ export default function ListingDetailView({ listing, requestCount = 0 }) {
                 <div className={styles.detailsSection}>
                     <div className={styles.header}>
                         <h1 className={styles.title}>{listing.title}</h1>
-                        <span className={styles.priceTag}>{listing.price || 'Free'}</span>
                     </div>
 
                     <div className={styles.meta}>
@@ -45,6 +45,12 @@ export default function ListingDetailView({ listing, requestCount = 0 }) {
                                 <div className={styles.lenderInfo}>
                                     <span className={styles.lenderLabel}>Lended by</span>
                                     <div className={styles.lenderName}>{listing.lender?.name}</div>
+                                    <div className={styles.lenderRating}>
+                                        <span className={styles.ratingValue}>
+                                            {listing.lender?.rating > 0 ? `${listing.lender.rating}/5` : 'No ratings yet'}
+                                        </span>
+                                        {listing.lender?.rating > 0 && <StarRating rating={listing.lender.rating} />}
+                                    </div>
                                 </div>
                             </div>
                         </Link>
