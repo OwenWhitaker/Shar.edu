@@ -3,45 +3,29 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request) {
     try {
+        const { searchParams } = new URL(request.url);
+        const limit = parseInt(searchParams.get('limit')) || 20;
+        const page = parseInt(searchParams.get('page')) || 1;
+        const skip = (page - 1) * limit;
+
         const client = await clientPromise.catch(err => {
             console.error("Database connection failed:", err);
             return null;
         });
 
         if (!client) {
-            return NextResponse.json({ error: 'Database connection failed. Check MONGODB_URI.' }, { status: 503 });
+            return NextResponse.json({ error: 'Database connection failed' }, { status: 503 });
         }
 
         const db = client.db("borrowit");
 
-        const listings = await db.collection("listings")
-            .find({})
-            .sort({ createdAt: -1 })
-            .toArray();
-
-        // Map listings to handle "lender" field (need to join users? No, prompt mentions "ownerUid" but page.js displays "lender.name".)
-        // Prompt says: "Users Collection: firebaseUid, username, bio, major, description, numListings."
-        // "Listings Collection: ownerUid, etc"
-        // Page.js expects `lender.name`.
-        // I should probably fetch users too or do a join to populate `lender`.
-        // Given complexity, and typical NoSQL, fetching users for listings or doing lookup is needed.
-        // Let's do a simple $lookup to populate lender info.
-
-        // However, standard join in MongoDB aggregate:
-        // {
-        //   $lookup: {
-        //     from: "users",
-        //     localField: "ownerUid",
-        //     foreignField: "firebaseUid",
-        //     as: "lender"
-        //   }
-        // }
-        // Let's use aggregation.
-
+        // Use aggregation for optimized join and projection
         const listingsWithLender = await db.collection("listings").aggregate([
             { $sort: { createdAt: -1 } },
+            { $skip: skip },
+            { $limit: limit },
             {
                 $lookup: {
                     from: "users",
@@ -58,42 +42,38 @@ export async function GET() {
             },
             {
                 $project: {
-                    _id: 0, // Or convert to string if needed by client but page.js uses listing.id
                     id: { $toString: "$_id" },
                     title: 1,
                     itemDescription: 1,
                     tag: 1,
-                    photo: 1,
-                    photos: 1, // Include new field
+                    photo: 1, // Store cover photo (first one usually)
+                    // Do NOT project the full 'photos' array here to keep response size small
                     numRequests: 1,
-                    requests: 1,
                     createdAt: 1,
                     ownerUid: 1,
-                    "lender.username": 1, // Map username to name for display
+                    "lender.username": 1,
                     "lender.firebaseUid": 1,
-                    "lender.image": 1
+                    "lender.image": 1,
+                    // If we need the count of photos without the actual data:
+                    photosCount: { $size: { $ifNull: ["$photos", []] } }
                 }
             }
         ]).toArray();
 
-        // The frontend expects `lender.name`, but our user schema has `username`. I will map it in the projection or frontend.
-        // Let's map it here to be safe: lender: { name: "$lender.username", ... }
-
         const finallistings = listingsWithLender.map(l => ({
             ...l,
-            image: l.photos && l.photos.length > 0 ? l.photos[0] : l.photo, // frontend uses .image for cover
-            images: l.photos && l.photos.length > 0 ? l.photos : (l.photo ? [l.photo] : []), // Array of images
+            // Fallback for image field used by frontend components
+            image: l.photo || (l.photosCount > 0 ? "/images/placeholder.png" : null),
             lender: l.lender ? {
                 ...l.lender,
                 name: l.lender.username,
                 id: l.lender.firebaseUid,
-                image: l.lender.image
             } : null
         }));
 
         return NextResponse.json(finallistings);
     } catch (e) {
-        console.error(e);
+        console.error("Error in GET /api/listings:", e);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
