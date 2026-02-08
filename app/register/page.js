@@ -19,7 +19,21 @@ export default function RegisterPage() {
         setError('');
 
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Create user in MongoDB
+            await fetch(`/api/user/${user.uid}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    username: email.split('@')[0], // Default username
+                }),
+            });
+
             router.push('/onboarding'); // Redirect to onboarding after success
         } catch (err) {
             setError(err.message);

@@ -42,7 +42,7 @@ export default function RequestsPage() {
                         <div className={styles.cardList}>
                             {outgoing.length === 0 ? (
                                 <div className={styles.emptyCard}>
-                                    <p>You haven't requested anything.</p>
+                                    <p>You haven&apos;t requested anything.</p>
                                 </div>
                             ) : (
                                 outgoing.map(req => (

@@ -10,13 +10,30 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // This is the "plug" that connects your site to Firebase
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             if (firebaseUser) {
-                // Fetch additional user data from localStorage since DB is unimplemented
+                // Fetch additional user data from localStorage since DB is unimplemented/partially implemented
                 const onboardingCompleted = localStorage.getItem(`onboardingCompleted_${firebaseUser.uid}`) === 'true';
                 const tourCompleted = localStorage.getItem(`tourCompleted_${firebaseUser.uid}`) === 'true';
                 const storedName = localStorage.getItem(`userName_${firebaseUser.uid}`) || '';
+
+                // Sync user to MongoDB
+                try {
+                    await fetch('/api/user/sync', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            uid: firebaseUser.uid,
+                            email: firebaseUser.email,
+                            displayName: firebaseUser.displayName,
+                            photoURL: firebaseUser.photoURL
+                        }),
+                    });
+                } catch (error) {
+                    console.error("Failed to sync user:", error);
+                }
 
                 setUser({
                     ...firebaseUser,
@@ -36,7 +53,7 @@ export const AuthProvider = ({ children }) => {
         try {
             await signOut(auth);
         } catch (error) {
-            console.error("Error signing out: ", error);
+            console.error("Error signing out:", error);
         }
     };
 

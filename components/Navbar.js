@@ -43,16 +43,18 @@ export default function Navbar() {
                         <span className={styles.label}>Search</span>
                     </Link>
 
-                    {/* Create Button with Label */}
-                    <Link href="/create" id="nav-list" className={styles.createItem}>
-                        <div className={styles.createButton}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M5 12h14" />
-                                <path d="M12 5v14" />
-                            </svg>
-                        </div>
-                        <span className={styles.label}>List</span>
-                    </Link>
+                    {/* Create Button with Label - Hide on /create */}
+                    {pathname !== '/create' && (
+                        <Link href="/create" id="nav-list" className={styles.createItem}>
+                            <div className={styles.createButton}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M5 12h14" />
+                                    <path d="M12 5v14" />
+                                </svg>
+                            </div>
+                            <span className={styles.label}>List</span>
+                        </Link>
+                    )}
 
                     {isAuthenticated ? (
                         <>

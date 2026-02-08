@@ -18,10 +18,15 @@ export default function PersonalProfile() {
     useEffect(() => {
         if (!isAuthenticated) {
             router.push('/login');
-        } else if (user) {
-            setBio(user.bio || '');
-            setMajor(user.major || '');
+            return;
         }
+
+        if (user) {
+            // Sync local state with user profile on load
+            if (user.bio && bio !== user.bio) setBio(user.bio);
+            if (user.major && major !== user.major) setMajor(user.major);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated, user, router]);
 
     if (!user) return null;
@@ -97,7 +102,7 @@ export default function PersonalProfile() {
 
                 <button className="btn btn-outline" style={{ width: '100%', marginTop: '1rem', borderColor: '#d32f2f', color: '#d32f2f' }} onClick={() => {
                     logout();
-                    router.push('/login');
+                    router.push('/');
                 }}>
                     Log Out
                 </button>
