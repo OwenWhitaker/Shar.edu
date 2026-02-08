@@ -5,7 +5,15 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        const client = await clientPromise;
+        const client = await clientPromise.catch(err => {
+            console.error("Database connection failed:", err);
+            return null;
+        });
+
+        if (!client) {
+            return NextResponse.json({ error: 'Database connection failed. Check MONGODB_URI.' }, { status: 503 });
+        }
+
         const db = client.db("borrowit");
 
         const listings = await db.collection("listings")
@@ -56,6 +64,7 @@ export async function GET() {
                     itemDescription: 1,
                     tag: 1,
                     photo: 1,
+                    photos: 1, // Include new field
                     numRequests: 1,
                     requests: 1,
                     createdAt: 1,
@@ -71,7 +80,8 @@ export async function GET() {
 
         const finallistings = listingsWithLender.map(l => ({
             ...l,
-            image: l.photo, // frontend uses .image
+            image: l.photos ? l.photos[0] : l.photo, // frontend uses .image for cover
+            images: l.photos ? l.photos : (l.photo ? [l.photo] : []), // Array of images
             lender: l.lender ? { ...l.lender, name: l.lender.username } : null
         }));
 
@@ -85,11 +95,24 @@ export async function GET() {
 export async function POST(request) {
     try {
         console.log("Connecting to MongoDB... URI present?", !!process.env.MONGODB_URI);
-        const client = await clientPromise;
+        const client = await clientPromise.catch(err => {
+            console.error("Database connection failed:", err);
+            return null;
+        });
+
+        if (!client) {
+            return NextResponse.json({ error: 'Database connection failed. Check MONGODB_URI.' }, { status: 503 });
+        }
+
         const db = client.db("borrowit");
         const body = await request.json();
 
-        const { ownerUid, title, itemDescription, tag, photo } = body;
+        const { ownerUid, title, itemDescription, tag, photos } = body;
+
+        console.log("Creating listing. Photos received:", photos ? photos.length : 0);
+        if (photos && photos.length > 0) {
+            console.log("First photo length:", photos[0].length);
+        }
 
         // Validation? Prompt implies just insert.
 
@@ -98,7 +121,7 @@ export async function POST(request) {
             title,
             itemDescription,
             tag,
-            photo,
+            photos, // Store array of base64 strings
             numRequests: 0,
             requests: [],
             createdAt: new Date(),

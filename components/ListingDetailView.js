@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from 'react';
 import styles from './ListingDetailView.module.css';
 import ContactInteraction from './ContactInteraction';
 import BorrowButton from './BorrowButton';
@@ -11,15 +12,81 @@ export default function ListingDetailView({ listing, requests = [], requestCount
     const { user } = useAuth();
     const existingRequest = user ? requests.find(r => r.borrowerId === user.id) : null;
 
+    // Initialize with 0
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
     if (!listing) return null;
+
+    const allImages = listing.images && listing.images.length > 0 ? listing.images : [listing.image];
+    // Ensure selectedIndex is valid
+    const currentImage = allImages[selectedIndex] || allImages[0];
 
     return (
         <div className={styles.container}>
             <div className={styles.grid}>
                 {/* Left Column: Images */}
                 <div className={styles.imageSection}>
-                    <div className={styles.mainImageContainer}>
-                        <img src={listing.image} alt={listing.title} className={styles.mainImage} />
+                    <div className={styles.galleryContainer}>
+                        {/* Main Large Display */}
+                        <div className={styles.mainDisplay}>
+                            <img
+                                src={currentImage}
+                                alt={listing.title}
+                                className={styles.mainDisplayImage}
+                                onClick={() => {
+                                    const nextIndex = (selectedIndex + 1) % allImages.length;
+                                    setSelectedIndex(nextIndex);
+                                }}
+                            />
+
+                            {/* Navigation Arrows */}
+                            {allImages.length > 1 && (
+                                <>
+                                    <button
+                                        type="button"
+                                        className={styles.navButtonPrev}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            const prevIndex = (selectedIndex - 1 + allImages.length) % allImages.length;
+                                            setSelectedIndex(prevIndex);
+                                        }}
+                                    >
+                                        ‹
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={styles.navButtonNext}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            const nextIndex = (selectedIndex + 1) % allImages.length;
+                                            setSelectedIndex(nextIndex);
+                                        }}
+                                    >
+                                        ›
+                                    </button>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Thumbnails Row (only if more than 1 image) */}
+                        {allImages.length > 1 && (
+                            <div className={styles.thumbnailRow}>
+                                {allImages.map((img, index) => (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        className={`${styles.thumbnailButton} ${selectedIndex === index ? styles.active : ''}`}
+                                        onClick={() => setSelectedIndex(index)}
+                                    >
+                                        <img
+                                            src={img}
+                                            alt={`View ${index + 1}`}
+                                            className={styles.thumbnailImage}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 

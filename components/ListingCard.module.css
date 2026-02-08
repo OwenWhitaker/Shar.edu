@@ -1,0 +1,160 @@
+.cardLink {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+}
+
+.card {
+    background: var(--surface);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.cardImageContainer {
+    height: 280px;
+    background: var(--surface);
+    position: relative;
+    padding: 6px;
+    z-index: 1;
+    /* For stacking context */
+}
+
+.cardImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: calc(var(--radius-card) - 6px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
+}
+
+.cardLink:hover .cardImage {
+    transform: scale(1.02);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.cardContent {
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.cardText {
+    flex: 1;
+    min-width: 0;
+    /* Text truncation fix */
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cardMeta {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.lenderBadge {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    flex-shrink: 0;
+}
+
+/* Navigation Buttons */
+.navButtonPrev,
+.navButtonNext {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #333;
+    transition: all 0.2s;
+    z-index: 10;
+    /* Above image and link */
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    /* Hidden by default */
+}
+
+.cardImageContainer:hover .navButtonPrev,
+.cardImageContainer:hover .navButtonNext {
+    opacity: 1;
+}
+
+.navButtonPrev:hover,
+.navButtonNext:hover {
+    background: #fff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.navButtonPrev {
+    left: 1rem;
+}
+
+.navButtonNext {
+    right: 1rem;
+}
+
+/* Dots Indicator */
+.dotsContainer {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transition: all 0.2s;
+}
+
+.dot.active {
+    background: white;
+    transform: scale(1.2);
+}
