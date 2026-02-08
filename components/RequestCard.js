@@ -1,21 +1,50 @@
 "use client";
 
+import { useState } from 'react';
 import Link from 'next/link';
 import styles from './RequestCard.module.css';
 
 export default function RequestCard({ request, type }) {
+    const [status, setStatus] = useState(request.status);
+    const [loading, setLoading] = useState(false);
+
     // Determine the other party's user object
     const otherUser = type === 'incoming' ? request.borrower : request.lender;
-    const isPending = request.status === 'pending';
+    const isPending = status === 'pending';
+
+    const handleStatusUpdate = async (newStatus) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/requests/${request.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update request');
+            }
+
+            const data = await response.json();
+            setStatus(data.status);
+        } catch (error) {
+            console.error('Error updating request:', error);
+            alert('Failed to update request. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleAccept = (e) => {
         e.preventDefault(); // Prevent Link navigation
-        alert("Accept functionality would go here (Server Action)");
+        handleStatusUpdate('accepted');
     };
 
     const handleDecline = (e) => {
         e.preventDefault();
-        alert("Decline functionality would go here");
+        handleStatusUpdate('declined');
     };
 
     return (
@@ -32,8 +61,8 @@ export default function RequestCard({ request, type }) {
 
                     <div className={styles.contentCol}>
                         <div className={styles.header}>
-                            <span className={`${styles.statusBadge} ${styles[request.status]}`}>
-                                {request.status}
+                            <span className={`${styles.statusBadge} ${styles[status]}`}>
+                                {status}
                             </span>
                             <span className={styles.date}>
                                 {new Date(request.createdAt).toLocaleDateString()}
@@ -57,11 +86,19 @@ export default function RequestCard({ request, type }) {
 
                         {type === 'incoming' && isPending && (
                             <div className={styles.actions}>
-                                <button className={`${styles.btn} ${styles.btnAccept}`} onClick={handleAccept}>
-                                    Accept
+                                <button
+                                    className={`${styles.btn} ${styles.btnAccept}`}
+                                    onClick={handleAccept}
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Processing...' : 'Accept'}
                                 </button>
-                                <button className={`${styles.btn} ${styles.btnDecline}`} onClick={handleDecline}>
-                                    Decline
+                                <button
+                                    className={`${styles.btn} ${styles.btnDecline}`}
+                                    onClick={handleDecline}
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Processing...' : 'Decline'}
                                 </button>
                             </div>
                         )}

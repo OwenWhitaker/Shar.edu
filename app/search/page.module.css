@@ -111,6 +111,34 @@
     padding-top: 1rem;
 }
 
+.lenderInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.lenderBadgeSmall {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    flex-shrink: 0;
+}
+
+.lenderImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .lenderName {
     color: var(--text-secondary);
     font-size: 0.9rem;

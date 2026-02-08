@@ -50,7 +50,8 @@ export default async function SearchPage({ searchParams }) {
                     image: "$photo",
                     createdAt: 1,
                     "lender.name": "$lender.username", // Map username to name
-                    "lender.username": 1
+                    "lender.username": 1,
+                    "lender.image": 1
                 }
             }
         ];
@@ -91,6 +92,13 @@ export default async function SearchPage({ searchParams }) {
                                     <h3 className={styles.cardTitle}>{listing.title}</h3>
                                     <div className={styles.cardFooter}>
                                         <div className={styles.lenderInfo}>
+                                            <div className={styles.lenderBadgeSmall}>
+                                                {listing.lender?.image ? (
+                                                    <img src={listing.lender.image} alt={listing.lender.name} className={styles.lenderImg} />
+                                                ) : (
+                                                    listing.lender?.name?.[0] || 'U'
+                                                )}
+                                            </div>
                                             <span className={styles.lenderName}>by {listing.lender?.name}</span>
                                         </div>
                                     </div>

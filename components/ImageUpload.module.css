@@ -21,7 +21,8 @@
     font-weight: 500;
 }
 
-.dropZone:hover {
+.dropZone:hover,
+.dragActive {
     border-color: var(--primary);
     background-color: #fff;
     transform: scale(1.01);

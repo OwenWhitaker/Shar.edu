@@ -1,15 +1,18 @@
 "use client";
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
 import HeroClouds from '../components/HeroClouds';
 import HeroSearch from '../components/HeroSearch';
 import ListingCardSkeleton from '../components/ListingCardSkeleton';
+import { useAuth } from './context/AuthContext';
 import ListingCard from '../components/ListingCard';
 
 export default function Home() {
     const [listings, setListings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
     useEffect(() => {
         fetch('/api/listings')
@@ -29,13 +32,27 @@ export default function Home() {
             });
     }, []);
 
-    const featuredListings = listings.slice(0, 6); // Show top 6
+    const filteredListings = user
+        ? listings.filter(l => l.ownerUid !== user.uid && l.ownerUid !== user.id)
+        : listings;
+
+    const featuredListings = filteredListings.slice(0, 6); // Show top 6
 
     return (
         <div className={styles.container}>
             {/* Hero Section */}
             <section className={styles.hero}>
                 <HeroClouds />
+                <div className={styles.heroLogoContainer}>
+                    <Image
+                        src="/images/logo-white.png"
+                        alt="BorrowIt Logo"
+                        width={200}
+                        height={80}
+                        className={styles.heroLogo}
+                        priority
+                    />
+                </div>
                 <div className={styles.heroContent}>
                     <h1 className={styles.heroTitle}>
                         Borrow what<br />you need.

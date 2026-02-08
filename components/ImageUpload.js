@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import styles from './ImageUpload.module.css';
 
 export default function ImageUpload({ name, multiple = false }) {
+    const [dragActive, setDragActive] = useState(false);
     const [previews, setPreviews] = useState([]);
     const [base64Values, setBase64Values] = useState([]);
 
@@ -36,13 +37,27 @@ export default function ImageUpload({ name, multiple = false }) {
         processFiles(files);
     }, [processFiles]);
 
-    const handleDragOver = (e) => {
+    const handleDragOver = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
-    };
+    }, []);
+
+    const handleDragEnter = useCallback((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(true);
+    }, []);
+
+    const handleDragLeave = useCallback((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
+    }, []);
 
     const handleDrop = useCallback((e) => {
         e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
         const files = Array.from(e.dataTransfer.files);
         processFiles(files);
     }, [processFiles]);
@@ -60,9 +75,11 @@ export default function ImageUpload({ name, multiple = false }) {
             ))}
 
             <div
-                className={styles.dropZone}
-                onDrop={handleDrop}
+                className={`${styles.dropZone} ${dragActive ? styles.dragActive : ''}`}
                 onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
             >
                 <p>Drag & drop images here, or click to select</p>
                 <input
