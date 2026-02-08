@@ -24,11 +24,9 @@ function GLBModel({ url, position, rotation, scale = 1 }) {
         const s = scene.clone();
 
         // Auto-center the model
-        // This fixes issues where the model origin is far from the mesh
         const box = new THREE.Box3().setFromObject(s);
         const center = box.getCenter(new THREE.Vector3());
 
-        // Move the scene so its center is at (0,0,0)
         s.position.x = -center.x;
         s.position.y = -center.y;
         s.position.z = -center.z;
@@ -48,7 +46,7 @@ function GLBModel({ url, position, rotation, scale = 1 }) {
 
     return (
         <group position={position} rotation={rotation} scale={scale}>
-            <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
+            <Float speed={2} rotationIntensity={0.6} floatIntensity={0.6}>
                 <primitive object={clonedScene} />
             </Float>
         </group>
@@ -62,24 +60,24 @@ function Scene({ scrollY }) {
         <group ref={groupRef}>
             {/* 
                 Camera GLB - Left 
-                Scale reduced to 0.4 (assuming units were huge)
-                Position brought closer (-8)
+                Scale reduced ~20% (0.08 -> 0.065)
              */}
             <GLBModel
                 url="/camera.glb"
-                position={[-8, 0, -2]}
-                rotation={[0.2, 0.8, 0]}
-                scale={0.4}
+                position={[-8.5, 1, -2]}
+                rotation={[0.4, 0.6, 0.2]}
+                scale={0.065}
             />
 
             {/* 
                 Drill GLB - Right 
+                Scale reduced ~20% (0.05 -> 0.04)
              */}
             <GLBModel
                 url="/drill.glb"
-                position={[8, 0, -2]}
-                rotation={[0.1, -0.8, 0]}
-                scale={0.4}
+                position={[8.5, 0, -2]}
+                rotation={[0.5, -0.6, -0.3]}
+                scale={0.04}
             />
 
             <ContactShadows position={[0, -5, 0]} opacity={0.4} scale={25} blur={2.5} far={4} color="#D81B60" />
@@ -94,7 +92,6 @@ useGLTF.preload('/drill.glb');
 export default function HeroClouds() {
     const [scrollY, setScrollY] = useState(0);
 
-    // Force re-render on resize to handle layout shifts
     useEffect(() => {
         const handleScroll = () => { setScrollY(window.scrollY); };
         window.addEventListener('scroll', handleScroll);
