@@ -36,6 +36,7 @@ async function getListing(id) {
                     tag: 1,
                     // tags: { $split: ["$tag", ","] },
                     photo: 1,
+                    photos: 1, // Include photos array
                     image: "$photo",
                     numRequests: 1,
                     requests: 1,
@@ -64,6 +65,9 @@ async function getListing(id) {
         } else if (!listing.tags) {
             listing.tags = [];
         }
+
+        // Map photos to images array
+        listing.images = listing.photos || (listing.photo ? [listing.photo] : []);
 
         return listing;
     } catch (e) {

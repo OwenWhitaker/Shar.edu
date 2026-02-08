@@ -6,6 +6,7 @@ import HeroClouds from '../components/HeroClouds';
 import HeroSearch from '../components/HeroSearch';
 import ListingCardSkeleton from '../components/ListingCardSkeleton';
 import { useAuth } from './context/AuthContext';
+import ListingCard from '../components/ListingCard';
 
 export default function Home() {
     const [listings, setListings] = useState([]);
@@ -16,7 +17,12 @@ export default function Home() {
         fetch('/api/listings')
             .then(res => res.json())
             .then(data => {
-                setListings(data);
+                if (Array.isArray(data)) {
+                    setListings(data);
+                } else {
+                    console.error("API returned non-array:", data);
+                    setListings([]);
+                }
                 setLoading(false);
             })
             .catch(err => {
@@ -67,30 +73,7 @@ export default function Home() {
                             </>
                         )}
                         {!loading && featuredListings.map(listing => (
-                            <Link href={`/listings/${listing.id}`} key={listing.id} className={styles.cardLink}>
-                                <div className="card">
-                                    <div className={styles.cardImageContainer}>
-                                        <img
-                                            src={listing.image}
-                                            alt={listing.title}
-                                            className={styles.cardImage}
-                                        />
-                                    </div>
-                                    <div className={styles.cardContent}>
-                                        <div className={styles.cardText}>
-                                            <h3 className={styles.cardTitle}>{listing.title}</h3>
-                                            <p className={styles.cardMeta}>Posted by {listing.lender?.name}</p>
-                                        </div>
-                                        <span className={styles.lenderBadge}>
-                                            {listing.lender?.image ? (
-                                                <img src={listing.lender.image} alt={listing.lender.name} className={styles.lenderImg} />
-                                            ) : (
-                                                listing.lender?.name?.[0] || 'U'
-                                            )}
-                                        </span>
-                                    </div>
-                                </div>
-                            </Link>
+                            <ListingCard key={listing.id} listing={listing} />
                         ))}
                     </div>
                 </div>

@@ -35,6 +35,7 @@ async function getListing(id) {
                     tag: 1,
                     // tags: { $split: ["$tag", ","] }, // handled in JS to be safer
                     photo: 1,
+                    photos: 1, // Include photos array
                     image: "$photo", // map photo to image
                     numRequests: 1,
                     requests: 1, // Embedded requests? Or need to fetch from requests collection?
@@ -70,6 +71,11 @@ async function getListing(id) {
         } else if (!listing.tags) {
             listing.tags = [];
         }
+
+        // Map photos to images array
+        console.log(`[getListing] Fetched listing ${id}. Photos:`, listing.photos ? listing.photos.length : 'N/A', "Photo:", listing.photo ? 'Yes' : 'No');
+        listing.images = listing.photos || (listing.photo ? [listing.photo] : []);
+        console.log(`[getListing] Mapped images:`, listing.images.length);
 
         return listing;
     } catch (e) {
