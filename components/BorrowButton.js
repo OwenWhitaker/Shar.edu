@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../app/context/AuthContext';
 import styles from './BorrowButton.module.css';
 
-export default function BorrowButton({ listingId, lenderId, existingRequest }) {
+export default function BorrowButton({ listingId, lenderId }) {
     const [isLoading, setIsLoading] = useState(false);
     const [isSent, setIsSent] = useState(false);
     const [showInput, setShowInput] = useState(false);
@@ -14,9 +14,6 @@ export default function BorrowButton({ listingId, lenderId, existingRequest }) {
     const [error, setError] = useState(null);
     const { user, isAuthenticated } = useAuth();
     const router = useRouter();
-
-    // Determine current status (either from props or local state if just sent)
-    const status = isSent ? 'pending' : existingRequest?.status;
 
     const handleBorrowClick = () => {
         if (!isAuthenticated) {
@@ -49,41 +46,11 @@ export default function BorrowButton({ listingId, lenderId, existingRequest }) {
         }
     };
 
-    if (status) {
-        let statusClass = styles.pending;
-        let statusText = "Request Pending";
-        let icon = (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-        );
-
-        if (status === 'accepted') {
-            statusClass = styles.accepted;
-            statusText = "Request Accepted";
-            icon = (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-            );
-        } else if (status === 'rejected') {
-            statusClass = styles.rejected;
-            statusText = "Request Rejected";
-            icon = (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                </svg>
-            );
-        }
-
+    if (isSent) {
         return (
-            <div className={`${styles.statusBadge} ${statusClass}`}>
-                <span style={{ display: 'flex', alignItems: 'center' }}>{icon}</span> {statusText}
-            </div>
+            <button className={`${styles.button} ${styles.sent}`} disabled>
+                ✓ Request Sent
+            </button>
         );
     }
 

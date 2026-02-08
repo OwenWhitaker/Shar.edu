@@ -5,12 +5,8 @@ import ContactInteraction from './ContactInteraction';
 import BorrowButton from './BorrowButton';
 import Link from 'next/link';
 import StarRating from './StarRating';
-import { useAuth } from '../app/context/AuthContext';
 
-export default function ListingDetailView({ listing, requests = [], requestCount = 0 }) {
-    const { user } = useAuth();
-    const existingRequest = user ? requests.find(r => r.borrowerId === user.id) : null;
-
+export default function ListingDetailView({ listing, requestCount = 0 }) {
     if (!listing) return null;
 
     return (
@@ -64,7 +60,6 @@ export default function ListingDetailView({ listing, requests = [], requestCount
                         <BorrowButton
                             listingId={listing.id}
                             lenderId={listing.lender?.id}
-                            existingRequest={existingRequest}
                         />
                         <ContactInteraction
                             lenderEmail={listing.lender?.email}

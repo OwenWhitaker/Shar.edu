@@ -12,7 +12,7 @@ export default async function ListingDetail({ params }) {
 
     return (
         <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
-            <ListingDetailView listing={listing} requests={requests} requestCount={requests.length} />
+            <ListingDetailView listing={listing} requestCount={requests.length} />
         </div>
     );
 
