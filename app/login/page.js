@@ -1,28 +1,44 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { auth } from '@/lib/firebase'; // Importing the auth instance we just configured
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import styles from './login.module.css';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
-    const { login, isAuthenticated } = useAuth(); // Assuming login returns success/fail or we check state
+    const [password, setPassword] = useState(''); // Added password state
+    const [error, setError] = useState(''); // Added error state for feedback
+    const [loading, setLoading] = useState(false);
+
     const router = useRouter();
     const searchParams = useSearchParams();
     const returnUrl = searchParams.get('returnUrl') || '/';
 
+    // Handle redirection if already logged in
     useEffect(() => {
-        if (isAuthenticated) {
-            router.push(returnUrl);
-        }
-    }, [isAuthenticated, router, returnUrl]);
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                router.push(returnUrl);
+            }
+        });
+        return () => unsubscribe();
+    }, [router, returnUrl]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = login(email);
-        if (success) {
-            // The useEffect will handle the redirect
+        setError('');
+        setLoading(true);
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            // Redirection is handled by the useEffect onAuthStateChanged listener
+        } catch (err) {
+            setError('Invalid email or password. Please try again.');
+            console.error("Firebase Login Error:", err.code, err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -45,8 +61,29 @@ export default function LoginPage() {
                             className={styles.input}
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-                        Continue with Email
+
+                    <div className={styles.inputGroup}>
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                    </div>
+
+                    {error && <p style={{ color: '#ff4d4d', fontSize: '0.85rem', marginBottom: '1rem' }}>{error}</p>}
+
+                    <button
+                        type="submit"
+                        className="btn btn-primary"
+                        style={{ width: '100%' }}
+                        disabled={loading}
+                    >
+                        {loading ? 'Signing in...' : 'Continue with Email'}
                     </button>
                 </form>
                 <p className={styles.note}>*Access restricted to Verified Students only.</p>
