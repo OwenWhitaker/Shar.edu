@@ -22,15 +22,13 @@ export default function ListingDetailView({ listing, requestCount = 0 }) {
                 <div className={styles.detailsSection}>
                     <div className={styles.header}>
                         <h1 className={styles.title}>{listing.title}</h1>
+                        <span className={styles.priceTag}>{listing.price || 'Free'}</span>
                     </div>
 
                     <div className={styles.meta}>
                         <span className={styles.date}>Posted {new Date(listing.createdAt).toLocaleDateString()}</span>
                         {requestCount > 0 && (
-                            <>
-                                <span className={styles.divider}>•</span>
-                                <span className={styles.requestCount}>🔥 {requestCount} already requesting</span>
-                            </>
+                            <span className={styles.requestCount}>🔥 {requestCount} interested</span>
                         )}
                     </div>
 
@@ -45,28 +43,28 @@ export default function ListingDetailView({ listing, requestCount = 0 }) {
                                     )}
                                 </div>
                                 <div className={styles.lenderInfo}>
+                                    <span className={styles.lenderLabel}>Lended by</span>
                                     <div className={styles.lenderName}>{listing.lender?.name}</div>
-                                    <div className={styles.lenderMajor}>{listing.lender?.major}</div>
-                                    <div className={styles.lenderRating}>⭐ {listing.lender?.rating} (12 reviews)</div>
                                 </div>
                             </div>
                         </Link>
+                    </div>
 
+                    <div className={styles.actionGroup}>
+                        <BorrowButton
+                            listingId={listing.id}
+                            lenderId={listing.lender?.id}
+                        />
                         <ContactInteraction
                             lenderEmail={listing.lender?.email}
                             listingTitle={listing.title}
                             buttonLabel="Contact Lender"
                         />
-
-                        <BorrowButton
-                            listingId={listing.id}
-                            lenderId={listing.lender?.id}
-                        />
                     </div>
 
                     <div className={styles.description}>
-                        <h3>Description</h3>
-                        <p>{listing.description}</p>
+                        <h3 className={styles.sectionLabel}>About this item</h3>
+                        <p className={styles.descriptionText}>{listing.description}</p>
                     </div>
 
                     <div className={styles.tags}>

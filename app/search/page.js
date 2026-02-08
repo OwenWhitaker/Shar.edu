@@ -2,8 +2,9 @@ import { getListings } from '../../lib/db';
 import styles from './page.module.css';
 import Link from 'next/link';
 
-export default function SearchPage({ searchParams }) {
-    const query = searchParams.q?.toLowerCase() || '';
+export default async function SearchPage({ searchParams }) {
+    const params = await searchParams;
+    const query = params.q?.toLowerCase() || '';
 
     const allListings = getListings();
 
@@ -16,34 +17,35 @@ export default function SearchPage({ searchParams }) {
     });
 
     return (
-        <div className={styles.container}>
-            <div className={styles.sidebar}>
-                <h3>Filters</h3>
-                <div className={styles.filterGroup}>
-                    <p className={styles.empty}>No filters available.</p>
+        <div className={styles.wrapper}>
+            <div className={`container ${styles.container}`}>
+                <div className={styles.header}>
+                    <h1 className={styles.pageTitle}>Search Results</h1>
+                    <p className={styles.resultCount}>
+                        Found {filteredListings.length} items {query && `for "${query}"`}
+                    </p>
                 </div>
-            </div>
-
-            <div className={styles.results}>
-                <h2>{filteredListings.length} results {query && `for "${query}"`}</h2>
 
                 <div className={styles.grid}>
                     {filteredListings.map(listing => (
                         <Link href={`/listings/${listing.id}`} key={listing.id} className={styles.cardLink}>
-                            <div className="card">
+                            <div className={styles.card}>
                                 <div className={styles.cardImageContainer}>
                                     <img
                                         src={listing.image}
                                         alt={listing.title}
                                         className={styles.cardImage}
                                     />
+                                    <div className={styles.cardOverlay}>
+                                        <span className={styles.priceTag}>{listing.price || 'Free'}</span>
+                                    </div>
                                 </div>
                                 <div className={styles.cardContent}>
                                     <h3 className={styles.cardTitle}>{listing.title}</h3>
-                                    <p className={styles.cardMeta}>Posted by {listing.lender?.name}</p>
-                                    <div className={styles.rating}>
-                                        {'⭐'.repeat(Math.round(listing.rating))}
-                                        <span className={styles.ratingCount}>({Math.floor(Math.random() * 20) + 1})</span>
+                                    <div className={styles.cardFooter}>
+                                        <div className={styles.lenderInfo}>
+                                            <span className={styles.lenderName}>by {listing.lender?.name}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -52,8 +54,13 @@ export default function SearchPage({ searchParams }) {
                 </div>
 
                 {filteredListings.length === 0 && (
-                    <div className={styles.empty}>
-                        <p>No listings found. Try adjusting your search.</p>
+                    <div className={styles.emptyState}>
+                        <div className={styles.emptyIcon}>🔍</div>
+                        <h3 className={styles.emptyTitle}>No matches found</h3>
+                        <p className={styles.emptyText}>Try adjusting your search terms or browse our new arrivals.</p>
+                        <Link href="/" className="btn btn-primary">
+                            Back to Home
+                        </Link>
                     </div>
                 )}
             </div>

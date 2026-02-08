@@ -1,22 +1,26 @@
 :root {
-  /* Premium University Palette */
-  --primary: #003366;
-  /* Deep Navy */
-  --primary-light: #004d99;
-  --accent: #ffcc00;
-  /* Gold/Amber */
-  --accent-hover: #e6b800;
-  --background: #f8f9fa;
-  /* Light Gray/White */
-  --surface: #ffffff;
-  --text-main: #1a1a1a;
+  /* Jeton-inspired Palette */
+  --primary: #E62A10;
+  /* Jeton Red */
+  --primary-hover: #C41E08;
+  --background: #F5F7FA;
+  /* Soft Light Gray */
+  --surface: #FFFFFF;
+  --text-main: #0A0A0A;
   --text-secondary: #666666;
-  --border: #e0e0e0;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --radius: 8px;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --border: #E5E7EB;
+
+  /* Shadows - Soft & Diffused */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.08);
+
+  /* Radius - Pill & Large Card */
+  --radius-pill: 100px;
+  --radius-card: 24px;
+  --radius-sm: 12px;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -48,23 +52,28 @@ button {
   font-family: inherit;
   border: none;
   outline: none;
+  background: none;
 }
 
 /* Utilities */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
+/* Button Styles - Jeton Style */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius);
-  font-weight: 600;
-  transition: all 0.2s;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-pill);
+  /* Pill Shape */
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  letter-spacing: -0.01em;
 }
 
 .btn-primary {
@@ -73,45 +82,53 @@ button {
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-light);
-  transform: translateY(-1px);
-}
-
-.btn-accent {
-  background-color: var(--accent);
-  color: var(--primary);
-}
-
-.btn-accent:hover {
-  background-color: var(--accent-hover);
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(230, 42, 16, 0.25);
 }
 
 .btn-outline {
   background-color: transparent;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   color: var(--text-main);
 }
 
 .btn-outline:hover {
-  background-color: #f0f0f0;
+  border-color: var(--text-main);
+  background-color: transparent;
 }
 
+/* Card Styles */
 .card {
   background: var(--surface);
-  border-radius: var(--radius);
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .card:hover {
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
-.avatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
+/* Typography Utilities */
+.text-h1 {
+  font-weight: 800;
+  font-size: 3rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.text-h2 {
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.text-sub {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
 }

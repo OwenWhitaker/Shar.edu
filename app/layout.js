@@ -16,7 +16,7 @@ export default function RootLayout({ children, modal }) {
             <body className={inter.className}>
                 <AuthProvider>
                     <Navbar />
-                    <main style={{ minHeight: 'calc(100vh - 70px)' }}>
+                    <main style={{ minHeight: '100vh', paddingBottom: '120px' }}>
                         {children}
                     </main>
                     {modal}
