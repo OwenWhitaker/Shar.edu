@@ -13,6 +13,8 @@ export default function PersonalProfile() {
     // Local state for editing form
     const [bio, setBio] = useState('');
     const [major, setMajor] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -29,6 +31,10 @@ export default function PersonalProfile() {
             if (user.bio && bio === '') setBio(user.bio);
             if (user.major && major === '') setMajor(user.major);
             if (user.image && imagePreview === null) setImagePreview(user.image);
+
+            // Sync first and last name if not already set
+            if (user.firstName !== undefined && firstName === '') setFirstName(user.firstName);
+            if (user.lastName !== undefined && lastName === '') setLastName(user.lastName);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated, user, router]);
@@ -59,6 +65,8 @@ export default function PersonalProfile() {
                 body: JSON.stringify({
                     bio,
                     major,
+                    firstName: firstName.trim() || "First",
+                    lastName: lastName.trim() || "Last",
                     image: imagePreview
                 }),
             });
@@ -123,6 +131,30 @@ export default function PersonalProfile() {
                 </div>
 
                 <form onSubmit={handleSave} className={styles.form}>
+                    <div className={styles.formGroup}>
+                        <label>First Name</label>
+                        <input
+                            type="text"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            disabled={!isEditing}
+                            className={styles.input}
+                            placeholder="First Name"
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label>Last Name</label>
+                        <input
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            disabled={!isEditing}
+                            className={styles.input}
+                            placeholder="Last Name"
+                        />
+                    </div>
+
                     <div className={styles.formGroup}>
                         <label>Major</label>
                         <input

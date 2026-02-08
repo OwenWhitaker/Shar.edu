@@ -41,6 +41,9 @@ export const AuthProvider = ({ children }) => {
         const tourCompleted = localStorage.getItem(`tourCompleted_${firebaseUser.uid}`) === 'true';
         const storedName = localStorage.getItem(`userName_${firebaseUser.uid}`) || '';
 
+        const firstName = dbUser.firstName || (dbUser.name ? dbUser.name.split(' ')[0] : "First");
+        const lastName = dbUser.lastName || (dbUser.name ? dbUser.name.split(' ').slice(1).join(' ') : "Last");
+
         // Prioritize DB data over Firebase/Local storage
         setUser({
             uid: firebaseUser.uid,
@@ -48,7 +51,9 @@ export const AuthProvider = ({ children }) => {
             email: firebaseUser.email,
             onboardingCompleted,
             tourCompleted,
-            name: dbUser.username || dbUser.name || firebaseUser.displayName || storedName || firebaseUser.email.split('@')[0],
+            firstName,
+            lastName,
+            name: dbUser.name || (firstName && lastName ? `${firstName} ${lastName}` : "First Last"),
             bio: dbUser.bio || '',
             major: dbUser.major || '',
             image: dbUser.image || firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${firebaseUser.email}`,

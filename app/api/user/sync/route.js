@@ -25,7 +25,10 @@ export async function POST(request) {
                 numListings: 0,
                 bio: "New to Shar.edu",
                 major: "Undecided",
-                image: photoURL
+                image: photoURL,
+                firstName: "First",
+                lastName: "Last",
+                name: "First Last"
             }
         };
 
