@@ -46,7 +46,7 @@ export default function Home() {
             <section className={styles.featured}>
                 <div className="container">
                     <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>So much to borrow, so little time...</h2>
+                        <h2 className={styles.sectionTitle}>Today&apos;s Top Picks</h2>
                         <Link href="/search" className={styles.viewAllLink}>
                             View All <span className={styles.arrow}>→</span>
                         </Link>
